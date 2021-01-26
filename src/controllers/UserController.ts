@@ -18,6 +18,10 @@ function generateToken(params = {}){
     })
    }
 
+function decodeToken(params: string): { email: string; password: string } {
+return jwt.decode(params) as { email: string; password: string }
+}
+
 export default class UserController{
     // USED IN ADMINISTRATION PANEL
     async index(request: Request, response: Response) {
@@ -74,7 +78,7 @@ export default class UserController{
                 await trx.commit(user);
 
 
-                return response.status(201).send({token: generateToken({email: email})});
+                return response.json({token: generateToken({email: email}), refresh_token: generateToken({ email, password: hashedPassword })});
             }else{
                 // console.log("Erro")
                 await trx.rollback();
@@ -130,39 +134,74 @@ export default class UserController{
     async authenticate(request: Request, response: Response) {
         
     
-       const { email, password } = request.body;
+       let { email, password ,refresh_token } = request.body;
        const trx = await db.transaction();
 
        try {
-            const user = await trx('users').where({email}).first();
-            if(!user){
-                return response.status(400).json({
-                    error: 'User Not Found',
-                });
-            }
-            if(!await PasswordHash.isPasswordValid(password, user.password)){
-                return response.status(400).json({
-                    error: 'Invalid Password!',
-                });
-            }
-            if(!user.isConfirmed){
-                return response.status(400).json({
-                    error: 'Your Email is not Confirmed!',
-                });
-            }
+           let hashPassword
+           let storedUser
 
-            user.password = undefined;
+           if(!!refresh_token){
+               const tokenUser = decodeToken(refresh_token)
+               email = tokenUser.email
+               hashPassword = tokenUser.password
 
-            const token = jwt.sign({id: user.id}, authConfig.secret,
-                {
-                    expiresIn: 86400,
-                });
+               const user = await trx('users').where({email}).first();
+               if(!user){
+                   return response.status(400).json({
+                       error: 'User Not Found',
+                   });
+               }
 
-            await trx.commit();
-        
-            return response.json({user, token});
+               if(!await PasswordHash.isPasswordValid(password, user.password)){
+                    return response.status(400).json({
+                        error: 'Invalid Password!',
+                    });
+                }
+                if(!user.isConfirmed){
+                    return response.status(400).json({
+                        error: 'Your Email is not Confirmed!',
+                    });
+                }
+                const token = jwt.sign({id: user.id}, authConfig.secret,
+                    {
+                        expiresIn: 86400,
+                    });
+                    
+                    await trx.commit();
+     
+                return response.json({user, token, refresh_token: generateToken({ email, password: user.password })});
+           }else{
+                const user = await trx('users').where({email}).first();
+                if(!user){
+                    return response.status(400).json({
+                        error: 'User Not Found',
+                    });
+                }
+
+                if(!await PasswordHash.isPasswordValid(password, user.password)){
+                    return response.status(400).json({
+                        error: 'Invalid Password!',
+                    });
+                }
+                if(!user.isConfirmed){
+                    return response.status(400).json({
+                        error: 'Your Email is not Confirmed!',
+                    });
+                }
+                const token = jwt.sign({id: user.id}, authConfig.secret,
+                    {
+                        expiresIn: 86400,
+                    });
+                    
+                await trx.commit();
+    
+                return response.json({user, token, refresh_token: generateToken({ email, password: user.password })});
+           }
+            
            
        } catch (error) {
+            await trx.rollback();
            console.log(error)
        }
 
