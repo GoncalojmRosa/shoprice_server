@@ -1,0 +1,1 @@
+# shoprice_server
