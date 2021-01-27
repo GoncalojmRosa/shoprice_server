@@ -69,7 +69,7 @@ export default class UserController{
                 
                 const url = `http://localhost:3333/confirmation/${tokenEmail}`;
                 
-                transporter.sendMail({
+                await transporter.sendMail({
                     to: email,
                     subject: 'Confirm Email',
                     html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
@@ -137,55 +137,53 @@ export default class UserController{
        let { email, password ,refresh_token } = request.body;
        const trx = await db.transaction();
 
+       
+
        try {
            let hashPassword
            let storedUser
 
-           if(!!refresh_token){
+           if(refresh_token){
                const tokenUser = decodeToken(refresh_token)
+               
                email = tokenUser.email
                hashPassword = tokenUser.password
 
                const user = await trx('users').where({email}).first();
-               if(!user){
-                   return response.status(400).json({
-                       error: 'User Not Found',
-                   });
-               }
+               
 
-               if(!await PasswordHash.isPasswordValid(password, user.password)){
+               if(hashPassword !== user.password){
+                await trx.rollback();
                     return response.status(400).json({
                         error: 'Invalid Password!',
                     });
                 }
-                if(!user.isConfirmed){
-                    return response.status(400).json({
-                        error: 'Your Email is not Confirmed!',
-                    });
-                }
-                const token = jwt.sign({id: user.id}, authConfig.secret,
-                    {
-                        expiresIn: 86400,
-                    });
                     
-                    await trx.commit();
+                await trx.commit();
      
-                return response.json({user, token, refresh_token: generateToken({ email, password: user.password })});
+                return response.json({user, refresh_token: generateToken({ email, password: user.password })});
            }else{
                 const user = await trx('users').where({email}).first();
+                
                 if(!user){
-                    return response.status(400).json({
+                    await trx.rollback();
+                    return response.status(404).json({
                         error: 'User Not Found',
                     });
                 }
 
+                console.log(user)
+
                 if(!await PasswordHash.isPasswordValid(password, user.password)){
-                    return response.status(400).json({
+                    await trx.rollback();
+                    return response.status(403).json({
                         error: 'Invalid Password!',
                     });
                 }
+                
                 if(!user.isConfirmed){
-                    return response.status(400).json({
+                    await trx.rollback();
+                    return response.status(401).json({
                         error: 'Your Email is not Confirmed!',
                     });
                 }
@@ -207,7 +205,15 @@ export default class UserController{
 
     }
 
+    async indexUser(request: Request, response: Response) {
+        
+        const {id} = request.body
+    
+        const users = await db('users').select('*').where('id', id);
 
+        //@ts-ignore
+        return response.json(users);
+      }
 
     async update(request: Request, response: Response) {
         
@@ -216,8 +222,6 @@ export default class UserController{
         try {
             const id = request.query;
             const  { name, email, password, avatar } = request.body;
-
-            console.log(request.body)
 
             await trx('users').update({name, email, password, avatar}).where(id);
             
