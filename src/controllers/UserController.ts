@@ -172,8 +172,6 @@ export default class UserController{
                     });
                 }
 
-                console.log(user)
-
                 if(!await PasswordHash.isPasswordValid(password, user.password)){
                     await trx.rollback();
                     return response.status(403).json({
@@ -207,12 +205,25 @@ export default class UserController{
 
     async indexUser(request: Request, response: Response) {
         
-        const {id} = request.body
-    
-        const users = await db('users').select('*').where('id', id);
+        const {id} = request.body;
+        const trx = await db.transaction();
 
-        //@ts-ignore
-        return response.json(users);
+        try{
+            const users = await trx('users').select('*').where({id: id}).first();
+    
+            if(!users){
+                await trx.rollback();
+                return response.status(404).json({
+                    error: 'User Not Found',
+                });
+            }
+            await trx.rollback();
+            return response.json({user: users});
+
+        }catch(err){
+            await trx.rollback();
+            console.log(err)
+        }
       }
 
     async update(request: Request, response: Response) {

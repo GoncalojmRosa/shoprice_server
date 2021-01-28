@@ -13,9 +13,9 @@ const connectionsController = new ConnectionController();
 routes.get('/users', authMiddleware, userController.index); // Lista de utilizadores & Precisa de fornecer um token para aceder a esta rota
 routes.post('/register', userController.create); // Criação de utilizadores
 routes.put('/profile', authMiddleware, userController.update); // Criação de utilizadores & Precisa de fornecer um token para aceder a esta rota
-routes.post('/authenticate', userController.authenticate); // Loggin
+routes.post('/authenticate', userController.authenticate); // Login
 routes.get('/confirmation/:token', userController.confirmation); // Confirmar o email do Utilizador
-routes.get('/profile', userController.indexUser); // Confirmar o email do Utilizador
+routes.post('/profile', userController.indexUser); // Confirmar o email do Utilizador
 // routes.post('/register', userController.create); // Criação de utilizadores na BD 
 
 routes.get('/connections', connectionsController.index);
