@@ -58,6 +58,25 @@ export default class WebsitesController{
             const site = await trx('websites').select('*').then(result => result[0]);
 
             if(site){   
+
+                // var spawn = require("child_process").spawn;
+                // var process = await spawn('python', ["src/script/webScrapping.py"]);
+
+                // process.stdout.on('data', function(data: any){
+                //     console.log(data.toString())
+                //     // return response.json(data.toString());
+                // })
+                var spawn = require("child_process").spawn;
+                var process = spawn('python',["src/script/webScrapping.py", product]);
+                
+                
+                
+                process.stdout.on('data',function(chunk: any){
+
+                    var textChunk = chunk.toString('utf8');// buffer to string
+                    console.log(textChunk)
+                });
+
                 await trx.commit();
                 return response.json();
 
