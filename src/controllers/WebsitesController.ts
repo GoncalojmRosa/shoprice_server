@@ -1,5 +1,6 @@
 import db from "../database/connections";
 import { Request, Response } from 'express';
+import DataCollect from '../script/puppeteer'
 
 export default class WebsitesController{
 
@@ -57,28 +58,11 @@ export default class WebsitesController{
         try {
             const site = await trx('websites').select('*').then(result => result[0]);
 
-            if(site){   
-
-                // var spawn = require("child_process").spawn;
-                // var process = await spawn('python', ["src/script/webScrapping.py"]);
-
-                // process.stdout.on('data', function(data: any){
-                //     console.log(data.toString())
-                //     // return response.json(data.toString());
-                // })
-                var spawn = require("child_process").spawn;
-                var process = spawn('python',["src/script/webScrapping.py", product]);
-                
-                
-                
-                process.stdout.on('data',function(chunk: any){
-
-                    var textChunk = chunk.toString('utf8');// buffer to string
-                    console.log(textChunk)
-                });
-
+            if(site){
+                const a = await DataCollect({product: product})
+                // console.log(a)
                 await trx.commit();
-                return response.json();
+                return response.json({Data: a});
 
             }else{
 

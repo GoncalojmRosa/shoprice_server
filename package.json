@@ -22,6 +22,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.168",
     "@types/nodemailer": "^6.4.0",
+    "@types/puppeteer": "^5.4.2",
     "ts-node-dev": "^1.0.0-pre.56",
     "typescript": "^3.9.7"
   },
@@ -33,6 +34,7 @@
     "knex": "^0.21.15",
     "lodash": "^4.17.20",
     "nodemailer": "^6.4.17",
+    "puppeteer": "^6.0.0",
     "sqlite3": "^5.0.0"
   }
 }
