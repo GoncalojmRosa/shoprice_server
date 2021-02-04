@@ -14,7 +14,7 @@ export default class WebsitesController{
 
     async create(request: Request, response: Response) {
 
-        const { url, Element, Class } = request.body;
+        const { Name, url, XPath, ImgXPath, NameXPath, PriceXPath } = request.body;
 
         const trx = await db.transaction();
 
@@ -24,9 +24,12 @@ export default class WebsitesController{
             if(!site){
 
                 const siteCreated =  await trx('websites').insert({
+                    Name,
                     url,
-                    pageElement: Element,
-                    pageElement_Class: Class
+                    XPath,
+                    ImgXPath,
+                    NameXPath,
+                    PriceXPath
                 });
 
                 await trx.commit(siteCreated);
@@ -56,14 +59,33 @@ export default class WebsitesController{
         const trx = await db.transaction();
 
         try {
-            const site = await trx('websites').select('*').then(result => result[0]);
+            const site = await trx('websites').select('*')
 
             if(site){
-                const a = await DataCollect({product: product})
-                // console.log(a)
-                await trx.commit();
-                return response.json({Data: a});
 
+                let results: any[] = ['']
+
+                for(var i = 0; i<site.length; i++){
+
+                    results[i] = await DataCollect({
+                            product: product, 
+                            url: site[i].url, 
+                            XPath: site[i].XPath, 
+                            ImgXPath: site[i].ImgXPath,
+                            NameXPath: site[i].NameXPath,
+                            PriceXPath: site[i].PriceXPath
+                        })
+
+                }
+                await trx.commit();
+
+                let data: any[] = []
+                for (let i = 0; i < site.length; i++) {
+
+                    data[i] = {[site[i].Name]: results[i]}
+                }
+
+                return response.json({Data: data})
             }else{
 
                 await trx.rollback();
