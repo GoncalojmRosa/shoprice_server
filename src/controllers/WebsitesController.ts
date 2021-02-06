@@ -68,6 +68,7 @@ export default class WebsitesController{
                 for(var i = 0; i<site.length; i++){
 
                     results[i] = await DataCollect({
+                            Supermarket: site[i].Name,
                             product: product, 
                             url: site[i].url, 
                             XPath: site[i].XPath, 
@@ -82,10 +83,10 @@ export default class WebsitesController{
                 let data: any[] = []
                 for (let i = 0; i < site.length; i++) {
 
-                    data[i] = {[site[i].Name]: results[i]}
+                    data[i] = results[i]
                 }
 
-                return response.json({Data: data})
+                return response.json(data)
             }else{
 
                 await trx.rollback();

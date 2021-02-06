@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer';
 
 
 interface Data{
+    Supermarket: string
     product: string,
     url?: string,
     XPath: string
@@ -31,6 +32,8 @@ export default async function DataCollect(data: Data) {
             let productImg = await page.$x(data.ImgXPath)
 
             let productPrice = await page.$x(data.PriceXPath)
+
+            let supermarketName = data.Supermarket;
 
             let name = await page.evaluate(el => el.textContent, productName[0])
                 .then((data) =>{
@@ -80,7 +83,7 @@ export default async function DataCollect(data: Data) {
             price = price.replace(/\s+/g,' ').trim();
             await page.close();
             await browser.close();
-            return {name, price, img};
+            return {title: supermarketName , name, price, img};
             
         } catch (error) {
             console.log(error)
