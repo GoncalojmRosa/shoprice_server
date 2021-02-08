@@ -83,7 +83,7 @@ export default async function DataCollect(data: Data) {
             price = price.replace(/\s+/g,' ').trim();
             await page.close();
             await browser.close();
-            return {title: supermarketName , name, price, img};
+            return {title: supermarketName , name, price, img, url: data.url + data.product};
             
         } catch (error) {
             console.log(error)
