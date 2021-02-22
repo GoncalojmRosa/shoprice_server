@@ -1,6 +1,7 @@
 import express from 'express';
 import UserController from './controllers/UserController';
 import ConnectionController from './controllers/ConnectionController';
+import CategoriesController from './controllers/CategoriesController';
 import authMiddleware from './middlewares/auth';
 import WebsitesController from './controllers/WebsitesController';
 
@@ -9,6 +10,7 @@ const routes = express.Router();
 const userController = new UserController();
 const connectionsController = new ConnectionController();
 const websiteController = new WebsitesController();
+const categoriesController = new CategoriesController();
 
 // routes.use(authMiddleware);
 
@@ -27,5 +29,9 @@ routes.post('/products', websiteController.products);
 
 routes.get('/connections', connectionsController.index);
 routes.post('/connections', connectionsController.create);
+
+routes.post('/categories', categoriesController.create);
+routes.get('/categories', categoriesController.index);
+
 
 export default routes;

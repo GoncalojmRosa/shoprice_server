@@ -9,6 +9,7 @@
     "migrate:make": "knex migrate:make",
     "migrate:latest": "knex migrate:latest",
     "knex:migrate:up": "knex --knexfile knexfile.ts migrate:up",
+    "knex:migrate:down": "knex --knexfile knexfile.ts migrate:down",
     "knex:migrate": "knex --knexfile knexfile.ts migrate:latest",
     "knex:migrate:rollback": "knex --knexfile knexfile.ts migrate:rollback"
   },
