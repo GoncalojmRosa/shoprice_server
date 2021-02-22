@@ -13,12 +13,36 @@ export default class ConnectionController {
   async create(request: Request, response: Response) {
     const { website_id, name, queryString } = request.body;
 
-    await db('categories').insert({
-      name,
-      queryString,
-      website_id
-    });
+    const trx = await db.transaction();
 
-    return response.status(201).send();
+    try{
+      const siteId = await trx('websites').where({id: website_id}).first();
+
+      if(siteId){
+
+        const categoryCreated = await trx('categories').insert({
+          name,
+          queryString,
+          website_id
+        });
+
+        await trx.commit(categoryCreated);
+
+        return response.status(201).send();
+      }else{
+        await trx.rollback();
+        return response.status(400).json({
+            error: `We dont have websites with the id #${website_id}`,
+        });
+      }
+
+  
+
+    }catch(error){
+      await trx.rollback();
+      return response.status(400).json({
+          error: 'We dont have websites working right now!',
+      });
+    }
   }
 }
