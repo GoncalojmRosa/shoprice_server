@@ -3,9 +3,15 @@ import db from '../database/connections';
 
 export default class ConnectionController {
   async index(request: Request, response: Response) {
-    const {website_id} = request.body
-    
-    const total = await db('categories').where({website_id: website_id});
+    const {website_id, name} = request.body
+
+    if(website_id == null && name == null){
+      const totalCategories = await db('categories').select('*');
+
+      return response.json({Alimentacao: totalCategories});
+    }
+
+    const total = await db('categories').where({website_id: website_id, name: name});
 
     return response.json({Alimentacao: total});
   }
