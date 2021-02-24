@@ -14,7 +14,7 @@ export default class WebsitesController{
 
     async create(request: Request, response: Response) {
 
-        const { Name, url, XPath, ImgXPath, NameXPath, PriceXPath } = request.body;
+        const { Name, url, XPath, ImgXPath, NameXPath, PriceXPath, filterCategory, secondUrl,secondFilterCategory } = request.body;
 
         const trx = await db.transaction();
 
@@ -29,7 +29,10 @@ export default class WebsitesController{
                     XPath,
                     ImgXPath,
                     NameXPath,
-                    PriceXPath
+                    PriceXPath,
+                    filterCategory,
+                    secondUrl,
+                    secondFilterCategory
                 });
 
                 await trx.commit(siteCreated);
@@ -54,7 +57,7 @@ export default class WebsitesController{
 
       async products(request: Request, response: Response) {
 
-        const { product } = request.body;
+        const { product, category } = request.body;
 
         const trx = await db.transaction();
 
@@ -62,31 +65,65 @@ export default class WebsitesController{
             const site = await trx('websites').select('*')
 
             if(site){
+                if(category == null){
+                    let results: any[] = ['']
+    
+                    for(var i = 0; i<site.length; i++){
+    
+                        results[i] = await DataCollect({
+                                Supermarket: site[i].Name,
+                                product: product, 
+                                url: site[i].url, 
+                                XPath: site[i].XPath, 
+                                ImgXPath: site[i].ImgXPath,
+                                NameXPath: site[i].NameXPath,
+                                PriceXPath: site[i].PriceXPath,
+                            })
+    
+                    }
+                    await trx.commit();
+    
+                    let data: any[] = []
+                    for (let i = 0; i < site.length; i++) {
+    
+                        data[i] = results[i]
+                    }
+    
+                    return response.json(data)
+                }else{
+                    
+                    let results: any[] = ['']
+                    let dataCat: any[] = ['']
+                    
+                    dataCat = await trx('categories').select('queryString').where({name: category}).orderBy('website_id')
+                    
+                    for(var i = 0; i<site.length; i++){
 
-                let results: any[] = ['']
-
-                for(var i = 0; i<site.length; i++){
-
-                    results[i] = await DataCollect({
-                            Supermarket: site[i].Name,
-                            product: product, 
-                            url: site[i].url, 
-                            XPath: site[i].XPath, 
-                            ImgXPath: site[i].ImgXPath,
-                            NameXPath: site[i].NameXPath,
-                            PriceXPath: site[i].PriceXPath
-                        })
-
+                        results[i] = await DataCollect({
+                                Supermarket: site[i].Name,
+                                product: product, 
+                                url: site[i].url, 
+                                XPath: site[i].XPath, 
+                                ImgXPath: site[i].ImgXPath,
+                                NameXPath: site[i].NameXPath,
+                                PriceXPath: site[i].PriceXPath,
+                                filter: dataCat[i].queryString, // FILTER FOR ALL WEBSITES IM GENERAL
+                                filterCategory: site[i].filterCategory,
+                                secondUrl: site[i].secondUrl,
+                                secondFilterCategory: site[i].secondFilterCategory
+                            })
+                    }
+                    await trx.commit();
+                    
+                    let data: any[] = []
+                    for (let i = 0; i < site.length; i++) {
+                        
+                            data[i] = results[i]
+                        }
+                    return response.json(data)
+    
+    
                 }
-                await trx.commit();
-
-                let data: any[] = []
-                for (let i = 0; i < site.length; i++) {
-
-                    data[i] = results[i]
-                }
-
-                return response.json(data)
             }else{
 
                 await trx.rollback();

@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "C:\\Users\\gonga\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe"
+    "python.pythonPath": "C:\\Users\\gonga\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe",
+    "discord.enabled": false
 }
