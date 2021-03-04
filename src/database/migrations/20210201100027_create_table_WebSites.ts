@@ -13,6 +13,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string("filterCategory")
         table.string("secondUrl")
         table.string("secondFilterCategory")
+        table.string("secondImgPath")
         // table.string('pageElement').notNullable(); //div, ul, li, main, .....
         // table.string('pageElement_Class').notNullable(); //productBoxTop, .....
       });

@@ -110,7 +110,8 @@ export default class WebsitesController{
                                 filter: dataCat[i].queryString, // FILTER FOR ALL WEBSITES IM GENERAL
                                 filterCategory: site[i].filterCategory,
                                 secondUrl: site[i].secondUrl,
-                                secondFilterCategory: site[i].secondFilterCategory
+                                secondFilterCategory: site[i].secondFilterCategory,
+                                secondImgPath: site[i].secondImgPath
                             })
                     }
                     await trx.commit();

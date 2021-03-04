@@ -13,67 +13,89 @@ interface Data{
     filterCategory?: string // filter for Pingo Doce WebSite (ONLY)
     secondUrl?: string,
     secondFilterCategory?: string
-    filter?: string
+    filter?: string,
+    secondImgPath?: string
 }
 
 export default async function DataCollect(data: Data) {
 
         try {
-            if(data.Supermarket == "Pingo Doce"){
-                let buyingPrice = ""
-                let firstName = ""
-                let sku = ""
-                fetch(data.secondUrl + data.product + data.filterCategory + data.filter + data.secondFilterCategory)
-                    .then(res => {
-                        if (res.status >= 400) {
-                            throw new Error("Bad response from server");
-                        }
-                        return res.json();
-                    })
-                    .then(prod => {
-                        // const a = "alface"
-                        // console.log(prod)
-                        // console.log(prod.sections)
-                        // Object.Keys(prod).forEach( value => console.log(value.products))
-                        //@ts-ignore
+            console.log(data.filter)
+            if(data.Supermarket == "Pingo Doce" && data.filter != undefined){
+                let buyingPrice, firstName, sku
+                const fetchedData = await fetch(data.secondUrl + data.product + data.filterCategory + data.filter + data.secondFilterCategory)
+                .then(res => {
+                    if (res.status >= 400) {
+                        throw new Error("Bad response from server");
+                    }
+                    return res.json();
+                })
+                .then(prod => {
+                    //@ts-ignore
                         buyingPrice = prod.sections[data.product].products[0]._source.buyingPrice;
                         firstName = prod.sections[data.product].products[0]._source.firstName;
                         sku = prod.sections[data.product].products[0]._source.sku;
-                        // console.log(buyingPrice, firstName, sku)
+                        return {
+                            title: data.Supermarket, 
+                            name: firstName, 
+                            price: buyingPrice, 
+                            img: data.secondImgPath + sku + "_1", 
+                            url: data.url + data.product
+                        };
                     })
                     .catch(err => {
                         console.error(err);
                     });
-                    return {
-                        title: data.Supermarket, 
-                        name: firstName, 
-                        price: buyingPrice, 
-                        img: data.ImgXPath + sku + "_1", 
-                        url: data.url + data.product
-                    };
-            }else{
 
-                const browser = await puppeteer.launch({
-                    headless: true,
-                });
+                    return fetchedData
+                }else{
+                    // console.log(data)
+                    const browser = await puppeteer.launch({
+                        headless: true,
+                    });
+            
+                    const page = await browser.newPage();
+                    
+                    if(data.filter != undefined && data.Supermarket != "Pingo Doce"){
+                        await page.goto(data.url + data.product + data.filter, {
+                            waitUntil: 'domcontentloaded'
+                        });
+                        
+                    }else{
+                        await page.goto(data.url + data.product, {
+                            waitUntil: 'domcontentloaded'
+                        });
+                    }
+            
+                    await page.waitForXPath(data.XPath)
         
-                const page = await browser.newPage();
+                    let productName = await page.$x(data.NameXPath)
+                    
+                    let productImg = await page.$x(data.ImgXPath)
         
-                await page.goto(data.url + data.product, {
-                    waitUntil: 'domcontentloaded'
-                });
+                    let productPrice = await page.$x(data.PriceXPath)
         
-                await page.waitForXPath(data.XPath)
-    
-                let productName = await page.$x(data.NameXPath)
-                
-                let productImg = await page.$x(data.ImgXPath)
-    
-                let productPrice = await page.$x(data.PriceXPath)
-    
-                let supermarketName = data.Supermarket;
-    
-                let name = await page.evaluate(el => el.textContent, productName[0])
+                    let supermarketName = data.Supermarket;
+        
+                    let name = await page.evaluate(el => el.textContent, productName[0])
+                        .then((data) =>{
+                            return data;
+                        }
+                        )
+                        .catch((err) => {
+                            console.log(err)
+                        });
+                    
+                    let img = await page.evaluate(el => el.textContent, productImg[0])
+                        .then((data) =>{
+                            return data;
+                        }
+                        )
+                        .catch((err) => {
+                            console.log(err)
+                        });
+        
+                    let price = await page.evaluate(el => el.textContent, productPrice[0])
                     .then((data) =>{
                         return data;
                     }
@@ -81,47 +103,29 @@ export default async function DataCollect(data: Data) {
                     .catch((err) => {
                         console.log(err)
                     });
-                
-                let img = await page.evaluate(el => el.textContent, productImg[0])
-                    .then((data) =>{
-                        return data;
-                    }
-                    )
-                    .catch((err) => {
-                        console.log(err)
-                    });
-    
-                let price = await page.evaluate(el => el.textContent, productPrice[0])
-                .then((data) =>{
-                    return data;
-                }
-                )
-                .catch((err) => {
-                    console.log(err)
-                });
-                //@ts-ignore
-                // const scrapedData = await page.evaluate(
-                //   () =>
-                //   Array.from(document.querySelectorAll('.productItem .productBoxTop .containerDescription .title a')).map((link) => ({
-                //     title: link.innerHTML,
-                //     // price: link.innerHTML,
-                //   }))
-                // );
-        
-                // var a = lamudiNewPropertyCount
-        
-                
-                
-                // await page.close();
-                // await browser.close();
-                
-                // console.log('scrapedData', lamudiNewPropertyCount);
-                name = name.replace(/\s+/g,' ').trim();
-                // i = name.replace(/\s+/g,' ').trim();
-                price = price.replace(/\s+/g,' ').trim();
-                await page.close();
-                await browser.close();
-                return {title: supermarketName , name, price, img, url: data.url + data.product};
+                    //@ts-ignore
+                    // const scrapedData = await page.evaluate(
+                    //   () =>
+                    //   Array.from(document.querySelectorAll('.productItem .productBoxTop .containerDescription .title a')).map((link) => ({
+                    //     title: link.innerHTML,
+                    //     // price: link.innerHTML,
+                    //   }))
+                    // );
+            
+                    // var a = lamudiNewPropertyCount
+            
+                    
+                    
+                    // await page.close();
+                    // await browser.close();
+                    
+                    // console.log('scrapedData', lamudiNewPropertyCount);
+                    name = name.replace(/\s+/g,' ').trim();
+                    // i = name.replace(/\s+/g,' ').trim();
+                    price = price.replace(/\s+/g,' ').trim();
+                    await page.close();
+                    await browser.close();
+                    return {title: supermarketName , name, price, img, url: data.url + data.product};
             }
 
 
