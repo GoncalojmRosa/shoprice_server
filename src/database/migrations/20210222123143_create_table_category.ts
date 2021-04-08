@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     return knex.schema.createTable('categories', (table) => {
         table.increments('id').primary();
         table.string('name').notNullable();
-        table.decimal('queryString').notNullable();
+        table.string('queryString').notNullable();
 
         //FK
         table
