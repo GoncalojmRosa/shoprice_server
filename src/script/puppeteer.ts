@@ -20,7 +20,6 @@ interface Data{
 export default async function DataCollect(data: Data) {
 
         try {
-            console.log(data.filter)
             if(data.Supermarket == "Pingo Doce" && data.filter != undefined){
                 let buyingPrice, firstName, sku
                 const fetchedData = await fetch(data.secondUrl + data.product + data.filterCategory + data.filter + data.secondFilterCategory)
