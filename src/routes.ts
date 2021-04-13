@@ -6,6 +6,8 @@ import NewsLetter from './controllers/NewsLetterController';
 import authMiddleware from './middlewares/auth';
 import WebsitesController from './controllers/WebsitesController';
 import ScheduleController from './controllers/ScheduleController';
+import SuggestionsController from './controllers/SuggestionsController';
+import CommentsController from './controllers/CommentsController';
 import cron from 'node-cron';
 import db from './database/connections';
 import fasterDataCollect from './script/fastPuppeter';
@@ -23,6 +25,8 @@ const websiteController = new WebsitesController();
 const categoriesController = new CategoriesController();
 const newsLetter = new NewsLetter();
 const schedule = new ScheduleController();
+const suggestions = new SuggestionsController();
+const comments = new CommentsController();
 
 
 
@@ -37,7 +41,7 @@ const schedule = new ScheduleController();
 //     await trx.commit(user)
 // })
 
-cron.schedule('*/10 * * * * *', async function(){
+cron.schedule('0 * * * *', async function(){
     const trx = await db.transaction();
     console.log("--------------- Cron Job Running ----------------")
 
@@ -197,6 +201,12 @@ routes.post('/newsletter', newsLetter.create);
 
 routes.get('/schedule', schedule.index);
 routes.post('/schedule', schedule.create);
+
+routes.get('/suggestions', suggestions.index);
+routes.post('/suggestions', suggestions.create);
+
+routes.get('/comments', comments.index);
+routes.post('/comments', comments.create);
 
 routes.get('/websites', websiteController.index);
 routes.post('/websites', websiteController.create);
