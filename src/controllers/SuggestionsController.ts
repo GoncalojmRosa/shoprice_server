@@ -63,4 +63,67 @@ export default class ScheduleController {
         });
     }
   }
+
+  async getSuggestionByUserId(request: Request, response: Response) {
+    const {id} = request.body;
+
+    // console.log(request.body)
+    const trx = await db.transaction();
+
+    try {
+      const anyUser = await trx('users').where({id: id}).first();
+
+
+      if(anyUser){
+        const suggestions = await trx('suggestions').where({user_id: anyUser.id});
+        const comments = await trx('comments').select('*');
+        const users = await trx('users').select('name', 'avatar', 'id');
+
+        // const specificComment = await trx('comments')
+        // .innerJoin('suggestions', 'comments.suggestion_id', 'suggestions.id')
+        // .innerJoin('users', 'suggestions.user_id', 'users.id')
+        // .select('users.name', 'users.avatar','comments.*', 'suggestions.*')
+        // .where('suggestions.user_id','=',id)
+
+
+        // console.log(specificComment)
+        // //User that comment
+        // const commentUser = await trx('users').where({id: suggestions[0].user_id}).first();
+
+        const commentsFormated = comments.map(comment => ({
+          ...comment,
+          user: users.filter(u => u.id === comment.user_id)[0]
+        }));
+        
+        const suggestionsFormated = suggestions.map(s => {
+          return {
+            ...s,
+            comments: commentsFormated.filter(c => c.suggestion_id === s.id)
+          };
+        });
+
+        // const suggestionsFormated = suggestions.map(s => {
+        //   return {
+        //     ...s,
+        //     comments: comments.filter(c => c.suggestion_id === s.id),
+        //     // name: specificComment,
+        //     // avatar: specificComment
+        //   }
+        // })
+        await trx.commit();
+        return response.json(suggestionsFormated)
+      }else{
+        await trx.rollback();
+        return response.status(400).json({
+            error: 'Something bad happened',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      await trx.rollback();
+      return response.status(400).json({
+          err: 'Unexpected error while creating new Schedule',
+      });
+    }
+  }
 }

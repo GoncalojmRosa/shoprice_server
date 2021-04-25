@@ -8,6 +8,7 @@ import WebsitesController from './controllers/WebsitesController';
 import ScheduleController from './controllers/ScheduleController';
 import SuggestionsController from './controllers/SuggestionsController';
 import CommentsController from './controllers/CommentsController';
+import ReportController from './controllers/ReportsController';
 import cron from 'node-cron';
 import db from './database/connections';
 import fasterDataCollect from './script/fastPuppeter';
@@ -27,6 +28,7 @@ const newsLetter = new NewsLetter();
 const schedule = new ScheduleController();
 const suggestions = new SuggestionsController();
 const comments = new CommentsController();
+const reports = new ReportController();
 
 
 
@@ -203,7 +205,13 @@ routes.get('/schedule', schedule.index);
 routes.post('/schedule', schedule.create);
 
 routes.get('/suggestions', suggestions.index);
+routes.post('/userSuggestion', suggestions.getSuggestionByUserId);
 routes.post('/suggestions', suggestions.create);
+
+routes.get('/reports', reports.index);
+routes.post('/reports', reports.create);
+routes.put('/reports', reports.update);
+routes.delete('/reports', reports.delete);
 
 routes.get('/comments', comments.index);
 routes.post('/comments', comments.create);
