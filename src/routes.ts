@@ -13,6 +13,7 @@ import cron from 'node-cron';
 import db from './database/connections';
 import fasterDataCollect from './script/fastPuppeter';
 import nodemailer from 'nodemailer';
+import adminMiddleware from './middlewares/authAdmin';
 const multer = require('multer');
 const storage = require('./config/multer')
 
@@ -189,12 +190,12 @@ cron.schedule('0 * * * *', async function(){
 
 })
 
-routes.get('/users', authMiddleware, userController.index); // Lista de utilizadores & Precisa de fornecer um token para aceder a esta rota
+routes.get('/users', authMiddleware, adminMiddleware, userController.index); // Lista de utilizadores & Precisa de fornecer um token para aceder a esta rota
 routes.post('/register', userController.create); // Criação de utilizadores
 routes.put('/profile', parser.single("image"), userController.update); // Criação de utilizadores & Precisa de fornecer um token para aceder a esta rota
 routes.post('/authenticate', userController.authenticate); // Login
 routes.get('/confirmation/:token', userController.confirmation); // Confirmar o email do Utilizador
-routes.post('/profile', userController.indexUser); // Confirmar o email do Utilizador
+routes.post('/profile',userController.indexUser); // Confirmar o email do Utilizador
 routes.put('/avatar', parser.single("image"),userController.updateAvatar); // Confirmar o email do Utilizador
 // routes.post('/register', userController.create); // Criação de utilizadores na BD 
 
@@ -207,8 +208,10 @@ routes.post('/schedule', schedule.create);
 routes.get('/suggestions', suggestions.index);
 routes.post('/userSuggestion', suggestions.getSuggestionByUserId);
 routes.post('/suggestions', suggestions.create);
+routes.get('/allSuggestions', suggestions.indexAll);
+routes.delete('/suggestions', suggestions.delete);
 
-routes.get('/reports', reports.index);
+routes.get('/reports',reports.index);
 routes.post('/reports', reports.create);
 routes.put('/reports', reports.update);
 routes.delete('/reports', reports.delete);
@@ -226,6 +229,7 @@ routes.post('/connections', connectionsController.create);
 
 routes.post('/categories', categoriesController.create);
 routes.get('/categories', categoriesController.index);
+routes.post('/siteCategories', categoriesController.indexBySite);
 
 
 export default routes;

@@ -9,7 +9,7 @@ var wordFitler = new filter()
 wordFitler.addWords(...wordsEng)
 wordFitler.addWords(...wordsPt)
 
-export default class ScheduleController {
+export default class SuggestionsController {
   async index(request: Request, response: Response) {
     const suggestions = await db('suggestions').select('*');
     const comments = await db('comments').select('*');
@@ -22,6 +22,30 @@ export default class ScheduleController {
    })
 
     return response.json(suggestionsFormated);
+  }
+
+  async indexAll(request: Request, response: Response) {
+    const suggestions = await db('suggestions').select('*');
+    const trx = await db.transaction();
+    try {
+      const users = await trx('users').select('name', 'avatar', 'id');
+  
+  
+      const sugFormated = suggestions.map(sug => ({
+        ...sug,
+        user: users.filter(user => user.id === sug.user_id)[0]
+      }));
+  
+      await trx.commit();
+      return response.json(sugFormated);
+      
+    } catch (error) {
+      console.log(error);
+      await trx.rollback();
+      return response.status(400).json({
+          err: 'Unexpected error while creating new Schedule',
+      });
+    }
   }
 
   async create(request: Request, response: Response) {
@@ -124,6 +148,44 @@ export default class ScheduleController {
       return response.status(400).json({
           err: 'Unexpected error while creating new Schedule',
       });
+    }
+  }
+
+  async delete(request: Request, response: Response) {
+    const { id } = request.body;
+
+    console.log(request.body)
+
+    const trx = await db.transaction();
+
+    try {
+      const isSuggestion = await trx('suggestions').where({id: id}).first();
+      if(isSuggestion){
+        const comments = await trx('comments').where({suggestion_id: id});
+        if(comments){
+          await trx('comments').delete().where({suggestion_id: id});
+        }
+
+
+        const deletedReport =  await trx('suggestions').delete().where({id: id});
+
+        await trx.commit(deletedReport);
+
+
+        return response.json();
+      }else{
+        await trx.rollback();
+        return response.status(400).json({
+            err: 'Unexpected error while deleting Suggestion',
+        });
+      }
+
+    } catch (err) {
+        console.log(err);
+        await trx.rollback();
+        return response.status(400).json({
+            err: 'Unexpected error while deleting Suggestion',
+        });
     }
   }
 }

@@ -1,5 +1,9 @@
 import * as Knex from "knex";
 
+const role = {
+    ADMIN: "admin",
+    BASIC: "basic"
+}
 
 export async function up(knex: Knex): Promise<void> {
     return knex.schema.createTable('users', (table) => {
@@ -12,6 +16,7 @@ export async function up(knex: Knex): Promise<void> {
         table.boolean('isConfirmed').defaultTo(false); 
         table.string('emailToken'); 
         table.timestamp('_created_at').defaultTo(knex.fn.now())
+        table.string('role').defaultTo(role.BASIC)
       });
 }
 

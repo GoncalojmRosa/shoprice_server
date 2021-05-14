@@ -1,7 +1,22 @@
 import { Request, Response } from 'express';
 import db from '../database/connections';
+import { updateReport } from '../models/ReportModel';
 
-export default class ConnectionController {
+async function update(
+  id: number,
+  Title: string,
+  Status: string,
+  Summary: string,
+  Priority: string,
+  Tags: string,
+){
+  const trx = await db.transaction();
+  const reports = await trx('reports').update({Title: Title, Summary: Summary, Priority: Priority, Status: Status,Tags: Tags }).where({id: id});
+  await trx.commit(reports)
+}
+
+
+export default class ReportsController {
   async index(request: Request, response: Response) {
     const reports = await db('reports').select('*');
     const users = await db('users').select('*');
@@ -49,38 +64,35 @@ export default class ConnectionController {
   }
 
   async update(request: Request, response: Response) {
-    const { id, Title, Summary, Priority,Status,Tags } = request.body;
-
-    console.log(request.body)
+    const {Reports} = request.body;
 
     const trx = await db.transaction();
 
     try {
 
+      Reports.map((report: any) =>{
+       update(report.id, report.Title, report.Status, report.Summary, report.Priority, report.Tags)
+      })
 
-        const updateReport =  await trx('reports').update({Title: Title, Summary: Summary, Priority: Priority, Status: Status,Tags: Tags }).where({id: id});
-
-        await trx.commit(updateReport);
-
-
-        return response.json();
+      trx.commit()
+      return response.json();
 
 
     } catch (err) {
         console.log(err);
         await trx.rollback();
         return response.status(400).json({
-            err: 'Unexpected error while creating new Schedule',
+            err: 'Unexpected error while creating new Report',
         });
     }
   }
 
   async delete(request: Request, response: Response) {
-    const { id } = request.params;
+    const { id } = request.body;
 
     const trx = await db.transaction();
 
-    console.log(id)
+    console.log(request.body)
 
     try {
       const isReported =  await trx('reports').where({id: id}).first();

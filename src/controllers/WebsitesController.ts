@@ -57,7 +57,9 @@ export default class WebsitesController{
 
       async products(request: Request, response: Response) {
 
-        const { product, category } = request.body;
+        const { product, Category } = request.body;
+
+        console.log(request.body)
 
         const trx = await db.transaction();
 
@@ -65,7 +67,10 @@ export default class WebsitesController{
             const site = await trx('websites').select('*')
 
             if(site){
-                if(category == null){
+                if(Category === null){
+
+                    // console.log(category)
+                    
                     let results: any[] = ['']
     
                     for(var i = 0; i<site.length; i++){
@@ -91,11 +96,10 @@ export default class WebsitesController{
     
                     return response.json(data)
                 }else{
-                    
                     let results: any[] = ['']
                     let dataCat: any[] = ['']
                     
-                    dataCat = await trx('categories').select('queryString').where({name: category}).orderBy('website_id')
+                    dataCat = await trx('categories').select('queryString').where({name: Category}).orderBy('website_id')
                     
                     for(var i = 0; i<site.length; i++){
 

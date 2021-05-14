@@ -8,7 +8,7 @@ var wordFitler = new filter()
 wordFitler.addWords(...wordsEng)
 wordFitler.addWords(...wordsPt)
 
-export default class ScheduleController {
+export default class CommentsController {
   async index(request: Request, response: Response) {
     const comments = await db('comments').select('*');
 
@@ -55,4 +55,6 @@ export default class ScheduleController {
         });
     }
   }
+
+  
 }
