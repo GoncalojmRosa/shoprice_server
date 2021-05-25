@@ -17,6 +17,7 @@ import adminMiddleware from './middlewares/authAdmin';
 const multer = require('multer');
 const storage = require('./config/multer')
 
+
 const parser = multer({ storage: storage });
 
 const routes = express.Router();
@@ -30,8 +31,6 @@ const schedule = new ScheduleController();
 const suggestions = new SuggestionsController();
 const comments = new CommentsController();
 const reports = new ReportController();
-
-
 
 // routes.use(authMiddleware);
 

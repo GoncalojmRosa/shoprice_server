@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import db from '../database/connections';
 import filter from 'bad-words';
-import Knex from 'knex';
 const wordsEng = require('../config/bad-wordsEng.json')
 const wordsPt = require('../config/bad-wordsPt.json')
 
@@ -26,14 +25,20 @@ export default class SuggestionsController {
 
   async indexAll(request: Request, response: Response) {
     const suggestions = await db('suggestions').select('*');
+    const comments = await db('comments').select('*');
     const trx = await db.transaction();
     try {
       const users = await trx('users').select('name', 'avatar', 'id');
   
+      const commentsFormated = comments.map(comment => ({
+        ...comment,
+        user: users.filter(u => u.id === comment.user_id)[0]
+      }));
   
       const sugFormated = suggestions.map(sug => ({
         ...sug,
-        user: users.filter(user => user.id === sug.user_id)[0]
+        user: users.filter(user => user.id === sug.user_id)[0],
+        comments: commentsFormated.filter(c => c.suggestion_id === sug.id)
       }));
   
       await trx.commit();
@@ -122,6 +127,7 @@ export default class SuggestionsController {
         const suggestionsFormated = suggestions.map(s => {
           return {
             ...s,
+            user: users.filter(user => user.id === s.user_id)[0],
             comments: commentsFormated.filter(c => c.suggestion_id === s.id)
           };
         });

@@ -30,7 +30,7 @@ export default class CommentsController {
           
           if(result){
             await trx.rollback();
-            return response.status(400).json({
+            return response.status(406).json({
               error: 'Por favor não coloque palavras ofensivas!',
             });
           }
