@@ -195,6 +195,8 @@ routes.put('/profile', parser.single("image"), userController.update); // Criaç
 routes.post('/authenticate', userController.authenticate); // Login
 routes.get('/confirmation/:token', userController.confirmation); // Confirmar o email do Utilizador
 routes.post('/profile',userController.indexUser); // Confirmar o email do Utilizador
+routes.delete('/users',userController.deleteUser); // Eliminar user
+routes.put('/updatePassword',userController.changePassword); // Eliminar user
 routes.put('/avatar', parser.single("image"),userController.updateAvatar); // Confirmar o email do Utilizador
 // routes.post('/register', userController.create); // Criação de utilizadores na BD 
 

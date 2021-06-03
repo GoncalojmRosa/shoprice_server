@@ -67,7 +67,8 @@ export default class WebsitesController{
             const site = await trx('websites').select('*')
 
             if(site){
-                if(Category === null){
+                console.log(Category)
+                if(Category === undefined || Category == ''){
 
                     // console.log(category)
                     

@@ -22,6 +22,7 @@ export default async function DataCollect(data: Data) {
         try {
             if(data.Supermarket == "Pingo Doce" && data.filter != undefined){
                 let buyingPrice, firstName, sku
+                // console.log(data.secondUrl + data.product + data.filterCategory + data.filter + data.secondFilterCategory)
                 const fetchedData = await fetch(data.secondUrl + data.product + data.filterCategory + data.filter + data.secondFilterCategory)
                 .then(res => {
                     if (res.status >= 400) {
@@ -34,6 +35,17 @@ export default async function DataCollect(data: Data) {
                         buyingPrice = prod.sections[data.product].products[0]._source.buyingPrice;
                         firstName = prod.sections[data.product].products[0]._source.firstName;
                         sku = prod.sections[data.product].products[0]._source.sku;
+
+                        // let price = buyingPrice.replace(/\s+/g,' ').trim();
+                        // price = buyingPrice.replace(/,/g, '.')
+                        // price = buyingPrice.replace(/[^\d.-]/g, '')
+                        // price = String/
+
+                        // buyingPrice = buyingPrice.replace(/\s+/g,' ').trim();
+                        // buyingPrice = buyingPrice.replace(/,/g, '.')
+                        // buyingPrice = buyingPrice.replace(/[^\d.-]/g, '')
+                        // buyingPrice = String(buyingPrice)
+
                         return {
                             title: data.Supermarket, 
                             name: firstName, 
@@ -56,13 +68,14 @@ export default async function DataCollect(data: Data) {
                     const page = await browser.newPage();
                     
                     if(data.filter != undefined && data.Supermarket != "Pingo Doce"){
-                        await page.goto(data.url + data.product + data.filter, {
-                            waitUntil: 'domcontentloaded'
+                        const a = data.url + data.product + data.filter
+                        await page.goto(a, {
+                            waitUntil: 'load'
                         });
                         
                     }else{
                         await page.goto(data.url + data.product, {
-                            waitUntil: 'domcontentloaded'
+                            waitUntil: 'load'
                         });
                     }
             
@@ -122,6 +135,9 @@ export default async function DataCollect(data: Data) {
                     name = name.replace(/\s+/g,' ').trim();
                     // i = name.replace(/\s+/g,' ').trim();
                     price = price.replace(/\s+/g,' ').trim();
+                    price = price.replace(/,/g, '.')
+                    price = price.replace(/[^\d.-]/g, '')
+                    price = parseFloat(price)
                     await page.close();
                     await browser.close();
                     return {title: supermarketName , name, price, img, url: data.url + data.product};

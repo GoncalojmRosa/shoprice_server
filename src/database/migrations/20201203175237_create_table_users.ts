@@ -16,6 +16,7 @@ export async function up(knex: Knex): Promise<void> {
         table.boolean('isConfirmed').defaultTo(false); 
         table.string('emailToken'); 
         table.timestamp('_created_at').defaultTo(knex.fn.now())
+        table.integer('warnings').defaultTo(0)
         table.string('role').defaultTo(role.BASIC)
       });
 }

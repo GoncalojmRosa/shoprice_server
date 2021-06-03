@@ -25,7 +25,7 @@ export default function autenticationMiddleware(request: Request, response: Resp
         if(err) return response.status(401).json({ error: 'Token Invalid.' })
 
         //@ts-ignore
-        request.userId = decoded.id;
+        // request.userId = decoded.id;
         return next();
     })
 }

@@ -351,7 +351,6 @@ export default class UserController{
                 });
                 await trx.commit(user);
 
-
                 return response.json({token: generateToken({email: email, role: _helpers.BASIC}), refresh_token: generateToken({ email, password: hashedPassword })});
             }else{
                 // console.log("Erro")
@@ -425,6 +424,13 @@ export default class UserController{
                const user = await trx('users').where({email}).first();
                
 
+               if(user.badge == 'Banned'){
+                await trx.commit();
+                return response.status(400).json({
+                  error: 'Pedimos desculpa mas a sua conta foi Banida do nosso Site!',
+                });
+               }
+
                if(hashPassword !== user.password){
                 await trx.rollback();
                     return response.status(400).json({
@@ -449,11 +455,20 @@ export default class UserController{
                         error: 'User Not Found',
                     });
                 }
+                if(user.role != 'admin'){
+                  if(user.badge == 'Banned'){
+                  
+                    await trx.rollback();
+                    return response.status(400).json({
+                      error: 'Pedimos desculpa mas a sua conta foi Banida do nosso Site!',
+                    });
+                  }
+                }
 
                 if(!await PasswordHash.isPasswordValid(password, user.password)){
                     await trx.rollback();
-                    return response.status(403).json({
-                        error: 'Invalid Password!',
+                    return response.status(400).json({
+                        error: 'Insira a Password correta!',
                     });
                 }
                 
@@ -486,7 +501,7 @@ export default class UserController{
         const user_id = request.body.id;
         // console.log(request.body)
         try{
-            const { id, avatar, name, email } = (
+            const { id, avatar, name, email, badge, role, warnings } = (
               await indexUser(user_id)
             )[0] as UserInterface
 
@@ -499,7 +514,10 @@ export default class UserController{
               id,
               name,
               avatar,
-              email
+              email,
+              badge,
+              role,
+              warnings
             }});
 
         }catch(err){
@@ -539,11 +557,11 @@ export default class UserController{
         
         try {
             const {id} = request.body;
-            const  { name, password } = request.body;
+            const  { name, email, badge, role, warnings } = request.body;
 
             // const hashedPassword = await PasswordHash.hashPassword(password);
             
-            await trx('users').update({name, /*password: hashedPassword*/}).where('id',id);
+            await trx('users').update({name, email, badge: badge, role, warnings}).where('id',id);
             
             await trx.commit();
     
@@ -559,5 +577,99 @@ export default class UserController{
             });
 
         }
+    }
+    async deleteUser(request: Request, response: Response) {
+        
+      const trx = await db.transaction();
+      
+      try {
+          const {id} = request.body;
+
+          const userReports = await trx('reports').select('*').where('user_id',id);
+          const userSuggestion = await trx('suggestions').select('*').where('user_id',id);
+          const userComments = await trx('comments').select('*').where('user_id',id);
+          const userNewsLetter = await trx('newsLetter').select('*').where('user_id',id);
+
+          if(userReports){
+            await trx('reports').delete('*').where('user_id',id);
+          }
+          if(userSuggestion){
+            await trx('suggestions').delete('*').where('user_id',id);
+          }
+          if(userComments){
+            await trx('comments').delete('*').where('user_id',id);
+          }
+          if(userNewsLetter){
+            await trx('newsLetter').delete('*').where('user_id',id);
+          }
+
+          await trx('users').delete('*').where('id',id);
+          
+          await trx.commit();
+  
+          return response.status(201).send();
+
+      } catch (err) {
+
+          console.log(err);
+          await trx.rollback();
+          
+          return response.status(400).json({
+          error: 'Unexpected error while updating new User',
+          });
+
+      }
+  }
+
+  async changePassword(request: Request, response: Response) {
+        
+      const trx = await db.transaction();
+      
+      try {
+        const  { id, password, confirmPassword } = request.body;
+
+        console.log(request.body)
+
+        // const hashedPassword = await PasswordHash.hashPassword(password);
+        
+        const userExist = await trx('users').select('*').where('id',id);
+
+        if(!userExist){
+
+          await trx.rollback();
+        
+          return response.status(400).json({
+            error: 'Unexpected error while updating User',
+          });
+        }
+
+        if(password === confirmPassword){
+          const hashedPassword = await PasswordHash.hashPassword(password);
+
+          await trx('users').update({password: hashedPassword}).where('id',id);
+
+          await trx.commit();
+
+          return response.status(201).send();
+
+        }else{
+          await trx.rollback();
+          
+          return response.status(400).json({
+            error: 'Passwords não correspondem',
+          });
+
+        }          
+
+      } catch (err) {
+
+          console.log(err);
+          await trx.rollback();
+          
+          return response.status(400).json({
+          error: 'Unexpected error while updating new User',
+          });
+
+      }
     }
 }

@@ -9,11 +9,11 @@ export async function seed(knex: Knex): Promise<void> {
         {
             "id": 1,
             "Name": "Continente",
-            "url": "https://www.continente.pt/pt-pt/public/Pages/searchresults.aspx?k=",
-            "XPath": "//*[@id=\"ctl00_SPWebPartManager1_g_ce8bbc4a_23de_48a0_afe2_1519cb58b783_ctl00__panelcontrol_\"]/div/div/div[4]/div[2]/div[2]/div[2]/div/div[1]",
-            "ImgXPath": "//*[@id=\"ctl00_SPWebPartManager1_g_ce8bbc4a_23de_48a0_afe2_1519cb58b783_ctl00__panelcontrol_\"]/div/div/div[4]/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[1]/div[1]/a/img/@data-original",
-            "NameXPath": "//*[@id=\"ctl00_SPWebPartManager1_g_ce8bbc4a_23de_48a0_afe2_1519cb58b783_ctl00__panelcontrol_\"]/div/div/div[4]/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[3]",
-            "PriceXPath": "//*[@id=\"ctl00_SPWebPartManager1_g_ce8bbc4a_23de_48a0_afe2_1519cb58b783_ctl00__panelcontrol_\"]/div/div/div[4]/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[4]/div[1]/div[1]"
+            "url": "https://www.continente.pt/pesquisa/?q=",
+            "XPath": "//*[@id=\"maincontent\"]/div[2]/div[3]/div",
+            "ImgXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[1]/a/picture/img/@src",
+            "NameXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/div[1]/div/a",
+            "PriceXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[1]/div/div[1]"
           },
           {
             "id": 2,
@@ -32,10 +32,10 @@ export async function seed(knex: Knex): Promise<void> {
             "id": 3,
             "Name": "Auchan",
             "url": "https://www.auchan.pt/Frontoffice/search/",
-            "XPath": "//*[@id=\"divDataList\"]/div[1]/div",
-            "ImgXPath": "//*[@id=\"divDataList\"]/div[1]/div/div/div[1]/a/div/img/@src",
-            "NameXPath": "//*[@id=\"divDataList\"]/div[1]/div/div/div[2]/div/a/h3",
-            "PriceXPath": "//*[@id=\"divDataList\"]/div[1]/div/div/div[3]/div/p/span"
+            "XPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div",
+            "ImgXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div[1]/a/picture/img/@src",
+            "NameXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div[2]/div[2]/div/a",
+            "PriceXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div[2]/div[4]/div/span/span/span"
           }
     ]);
 };

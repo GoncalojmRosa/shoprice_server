@@ -11,6 +11,8 @@ export interface UserInterface {
     badge?: string
     email?: string
     password?: string
+    role?: string
+    warnings?: string
   }
 
 export async function indexUser(

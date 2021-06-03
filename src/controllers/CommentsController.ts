@@ -29,14 +29,36 @@ export default class CommentsController {
           const result = wordFitler.isProfane(text);
           
           if(result){
+            const user = await trx('users').select('*').where('id', user_id).first();
+
+            if(user.warnings === 3){
+              if(user.role === 'admin'){
+                await trx.rollback();
+                return response.status(400).json({
+                  error: 'Por favor não coloque palavras ofensivas!',
+                });
+              }
+              await trx('users').update({badge: 'Banned'}).where('id',user_id);
+              await trx.commit();
+              return response.status(400).json({
+                status: 'Banned',
+                error: 'Pedimos desculpa mas a sua conta foi Banida do nosso Site!',
+              });
+            }
+
+            await trx('users').update({warnings: user.warnings + 1}).where('id',user_id);
+            
+            await trx.commit();
+
             await trx.rollback();
-            return response.status(406).json({
+            return response.status(400).json({
               error: 'Por favor não coloque palavras ofensivas!',
             });
           }
-          const newComment =  await trx('comments').insert({text: text, user_id: user_id, suggestion_id: suggestion_id});
+            
+          await trx('comments').insert({text: text, user_id: user_id, suggestion_id: suggestion_id});
 
-          await trx.commit(newComment);
+          await trx.commit();
 
 
           return response.json();

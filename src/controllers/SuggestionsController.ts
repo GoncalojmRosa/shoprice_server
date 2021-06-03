@@ -58,6 +58,8 @@ export default class SuggestionsController {
 
     const trx = await db.transaction();
 
+    console.log(request.body)
+
     try {
         const isSuggestion = await trx('users').where({id: user_id}).first();
 
@@ -66,6 +68,27 @@ export default class SuggestionsController {
           const result = wordFitler.isProfane(text);
           
           if(result){
+            const user = await trx('users').select('*').where('id', user_id).first();
+
+            if(user.warnings === 3){
+              if(user.role === 'admin'){
+                await trx.rollback();
+                return response.status(400).json({
+                  error: 'Por favor não coloque palavras ofensivas!',
+                });
+              }
+              await trx('users').update({badge: 'Banned'}).where('id',user_id);
+              await trx.commit();
+              return response.status(400).json({
+                status: 'Banned',
+                error: 'Pedimos desculpa mas a sua conta foi Banida do nosso Site!',
+              });
+            }
+
+            await trx('users').update({warnings: user.warnings + 1}).where('id',user_id);
+            
+            await trx.commit();
+
             await trx.rollback();
             return response.status(400).json({
               error: 'Por favor não coloque palavras ofensivas!',

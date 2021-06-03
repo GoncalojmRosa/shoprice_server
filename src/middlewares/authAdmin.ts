@@ -25,7 +25,7 @@ const adminMiddleware = (request: Request, response: Response, next: NextFunctio
         if(err) return response.status(401).json({ error: 'Token Invalid.' })
 
         //@ts-ignore
-        request.userId = decoded.id;
+        // request.userId = decoded.id;
 
         if(decoded.role != _helpers.ADMIN){
             return response.status(403).json({ error: 'Unauthorized' })

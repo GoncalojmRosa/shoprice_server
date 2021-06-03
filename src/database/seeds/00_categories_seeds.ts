@@ -9,7 +9,7 @@ export async function seed(knex: Knex): Promise<void> {
         {
             "id": 1,
             "name": "Mercearia",
-            "queryString": "&tct=Mercearia&chn=Continente",
+            "queryString": "&pmin=0%2e01&cgid=mercearia&page=0",
             "website_id": 1
           },
           {
@@ -27,7 +27,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 4,
             "name": "Legumes",
-            "queryString": "&tct=Frutas%20e%20Legumes&chn=Continente",
+            "queryString": "&pmin=0%2e01&cgid=frutas-legumes&page=0",
             "website_id": 1
           },
           {
@@ -45,7 +45,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 7,
             "name": "Bebidas",
-            "queryString": "&tct=BebidasÿVinho&chn=Continente",
+            "queryString": "&pmin=0%2e01&cgid=bebidas&page=0",
             "website_id": 1
           },
           {
@@ -63,7 +63,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 10,
             "name": "Talho",
-            "queryString": "&tct=FrescosÿTalho&chn=Continente",
+            "queryString": "&pmin=0%2e01&cgid=peixaria-talho&page=0",
             "website_id": 1
           },
           {
@@ -81,7 +81,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 13,
             "name": "Peixe",
-            "queryString": "&tct=FrescosÿPeixaria&chn=Continente",
+            "queryString": "&pmin=0%2e01&cgid=peixaria-talho&page=0",
             "website_id": 1
           },
           {
@@ -99,7 +99,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 16,
             "name": "Frutas",
-            "queryString": "&tct=FrescosÿFrutas&chn=Continente",
+            "queryString": "&pmin=0%2e01&cgid=frutas-legumes&page=0",
             "website_id": 1
           },
           {
@@ -117,7 +117,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 19,
             "name": "Temperos",
-            "queryString": "&tct=MerceariaÿMolhos%2C%20Temperos%20e%20Sal&chn=Continente",
+            "queryString": "&cgid=mercearia-molhos-temperos-sal&page=0",
             "website_id": 1
           },
           {
@@ -135,7 +135,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 22,
             "name": "Higiene",
-            "queryString": "&tct=Higiene%20e%20Beleza&chn=Continente",
+            "queryString": "&cgid=higiene-beleza&page=0",
             "website_id": 1
           },
           {
@@ -153,7 +153,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 25,
             "name": "Higiene Oral",
-            "queryString": "&tct=Higiene%20e%20BelezaÿHigiene%20Oral&chn=Continente",
+            "queryString": "&cgid=higiene-beleza-oral&page=0",
             "website_id": 1
           },
           {
@@ -171,7 +171,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 28,
             "name": "Infantil",
-            "queryString": "&tct=BebéÿBanho%20e%20Higiene&chn=Continente",
+            "queryString": "&cgid=higiene-beleza-oral&page=0",
             "website_id": 1
           },
           {
@@ -189,7 +189,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 31,
             "name": "Cabelo",
-            "queryString": "&tct=Higiene%20e%20BelezaÿCabelo&chn=Continente",
+            "queryString": "&cgid=higiene-beleza-cabelo&page=0",
             "website_id": 1
           },
           {
