@@ -15,6 +15,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('password').notNullable(); // (Admin, Banned, Editor, NormalUser, ....)
         table.boolean('isConfirmed').defaultTo(false); 
         table.string('emailToken'); 
+        table.string('code'); 
         table.timestamp('_created_at').defaultTo(knex.fn.now())
         table.integer('warnings').defaultTo(0)
         table.string('role').defaultTo(role.BASIC)

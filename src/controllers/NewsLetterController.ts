@@ -14,6 +14,8 @@ export default class NewsLetter {
   async create(request: Request, response: Response) {
     const { ProductName, price,website_id,user_id, schedule_id} = request.body
 
+    console.log(request.body)
+
     const trx = await db.transaction();
 
     try {
@@ -41,83 +43,7 @@ export default class NewsLetter {
         ("00" + date.getMinutes()).slice(-2) + ":" +
         ("00" + date.getSeconds()).slice(-2);
         
-        console.log(schedule_id)
         
-        if(schedule_id == 1){
-
-            var date = new Date(); 
-            var datePlusDay =
-          date.getFullYear() + "-" +
-          ("00" + (date.getMonth() + 1)).slice(-2) + "-" +
-          ("00" + (date.getDate() + 1)).slice(-2) + " " +
-          ("00" + date.getHours()).slice(-2) + ":" +
-          ("00" + date.getMinutes()).slice(-2) + ":" +
-          ("00" + date.getSeconds()).slice(-2);
-
-          const newsCreated =  await trx('newsLetter').insert({
-            ProductName: ProductName,
-            price: price,
-            website_id: website_id,
-            user_id: user_id,
-            schedule_id: schedule_id,
-            _next_email: datePlusDay,
-            _sended_at: sended_at
-          });
-          
-
-      
-        await trx.commit(newsCreated);
-  
-        }else if(schedule_id == 2){
-
-          let now = new Date();
-          now.setDate(now.getDate() + 1 * 7);
-  
-          let datePlusWeek = now.getFullYear() + "-" +
-          ("00" + (now.getMonth() + 1)).slice(-2) + "-" +
-          ("00" + now.getDate()).slice(-2) + " " +
-          ("00" + now.getHours()).slice(-2) + ":" +
-          ("00" + now.getMinutes()).slice(-2) + ":" +
-          ("00" + now.getSeconds()).slice(-2);
-  
-          const newsCreated =  await trx('newsLetter').insert({
-            ProductName: ProductName,
-            price: price,
-            website_id: website_id,
-            user_id: user_id,
-            schedule_id: schedule_id,
-            _next_email: datePlusWeek,
-            _sended_at: sended_at
-          });
-          
-        await trx.commit(newsCreated);
-
-        }else if(schedule_id == 3){
-
-          // var date = new Date(); 
-          // var datePlusMonth =
-          // date.getFullYear() + "-" +
-          // ("00" + (date.getMonth() + 2)).slice(-2) + "-" +
-          // ("00" + date.getDate()).slice(-2) + " " +
-          // ("00" + date.getHours()).slice(-2) + ":" +
-          // ("00" + date.getMinutes()).slice(-2) + ":" +
-          // ("00" + date.getSeconds()).slice(-2);
-  
-          const newsCreated =  await trx('newsLetter').insert({
-            ProductName: ProductName,
-            price: price,
-            website_id: website_id,
-            user_id: user_id,
-            schedule_id: schedule_id,
-            _next_email: next_email_Date,
-            _sended_at: sended_at
-          });
-          
-
-      
-          await trx.commit(newsCreated);
-        }
-
         let transporter = nodemailer.createTransport({
           name: "Email Verification",
           host: "smtp.sapo.pt",
@@ -139,16 +65,95 @@ export default class NewsLetter {
           PriceXPath: site.PriceXPath,
       });
 
+      if(a === null){
+        await trx.rollback();
+        return response.status(400).json({
+            error: 'Produto não encontrado',
+        });
+      }else{
 
-
-      await transporter.sendMail({
-        from: "testeemail1@sapo.pt",
-        to: user.email,
-        subject: 'Confirm Email',
-        html: `Price ${a?.price}`,
-    });
-
-
+        await transporter.sendMail({
+          from: "testeemail1@sapo.pt",
+          to: user.email,
+          subject: 'Confirm Email',
+          html: `Name: ${a?.name}\nPrice ${a?.price}`,
+      });
+          
+          if(schedule_id == 1){
+  
+              var date = new Date(); 
+              var datePlusDay =
+            date.getFullYear() + "-" +
+            ("00" + (date.getMonth() + 1)).slice(-2) + "-" +
+            ("00" + (date.getDate() + 1)).slice(-2) + " " +
+            ("00" + date.getHours()).slice(-2) + ":" +
+            ("00" + date.getMinutes()).slice(-2) + ":" +
+            ("00" + date.getSeconds()).slice(-2);
+  
+            const newsCreated =  await trx('newsLetter').insert({
+              ProductName: ProductName,
+              price: price,
+              website_id: website_id,
+              user_id: user_id,
+              schedule_id: schedule_id,
+              _next_email: datePlusDay,
+              _sended_at: sended_at
+            });
+            
+  
+        
+          await trx.commit(newsCreated);
+    
+          }else if(schedule_id == 2){
+  
+            let now = new Date();
+            now.setDate(now.getDate() + 1 * 7);
+    
+            let datePlusWeek = now.getFullYear() + "-" +
+            ("00" + (now.getMonth() + 1)).slice(-2) + "-" +
+            ("00" + now.getDate()).slice(-2) + " " +
+            ("00" + now.getHours()).slice(-2) + ":" +
+            ("00" + now.getMinutes()).slice(-2) + ":" +
+            ("00" + now.getSeconds()).slice(-2);
+    
+            const newsCreated =  await trx('newsLetter').insert({
+              ProductName: ProductName,
+              price: price,
+              website_id: website_id,
+              user_id: user_id,
+              schedule_id: schedule_id,
+              _next_email: datePlusWeek,
+              _sended_at: sended_at
+            });
+            
+          await trx.commit(newsCreated);
+  
+          }else if(schedule_id == 3){
+  
+            // var date = new Date(); 
+            // var datePlusMonth =
+            // date.getFullYear() + "-" +
+            // ("00" + (date.getMonth() + 2)).slice(-2) + "-" +
+            // ("00" + date.getDate()).slice(-2) + " " +
+            // ("00" + date.getHours()).slice(-2) + ":" +
+            // ("00" + date.getMinutes()).slice(-2) + ":" +
+            // ("00" + date.getSeconds()).slice(-2);
+    
+            const newsCreated =  await trx('newsLetter').insert({
+              ProductName: ProductName,
+              price: price,
+              website_id: website_id,
+              user_id: user_id,
+              schedule_id: schedule_id,
+              _next_email: next_email_Date,
+              _sended_at: sended_at
+            });
+            
+  
+        
+            await trx.commit(newsCreated);
+          }
+      }
         return response.json();
       }else{
           await trx.rollback();
@@ -165,4 +170,30 @@ export default class NewsLetter {
       });
   }
   }
+
+  async indexNewsById(request: Request, response: Response) {
+    const {id} = request.body
+    const trx = await db.transaction();
+
+  try{
+    const site = await trx('newsLetter').where('user_id',id);
+
+    // console.log(site)
+
+    if(site){
+      await trx.commit();
+      return response.json(site);
+    }else{
+      await trx.rollback();
+      return response.status(400).json({
+          error: `Something bad Happen!`,
+      });
+    }
+  }catch(error){
+    await trx.rollback();
+    return response.status(400).json({
+        error: 'We dont have websites working right now!',
+    });
+  }
+}
 }

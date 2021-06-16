@@ -64,10 +64,9 @@ export default class WebsitesController{
         const trx = await db.transaction();
 
         try {
-            const site = await trx('websites').select('*')
+            const site = await trx('websites').select('*').whereBetween('id', [1, 3])
 
             if(site){
-                console.log(Category)
                 if(Category === undefined || Category == ''){
 
                     // console.log(category)
@@ -112,7 +111,7 @@ export default class WebsitesController{
                                 ImgXPath: site[i].ImgXPath,
                                 NameXPath: site[i].NameXPath,
                                 PriceXPath: site[i].PriceXPath,
-                                filter: dataCat[i].queryString, // FILTER FOR ALL WEBSITES IM GENERAL
+                                filter: dataCat[i].queryString, // FILTER FOR ALL WEBSITES IN GENERAL
                                 filterCategory: site[i].filterCategory,
                                 secondUrl: site[i].secondUrl,
                                 secondFilterCategory: site[i].secondFilterCategory,
@@ -123,9 +122,16 @@ export default class WebsitesController{
                     
                     let data: any[] = []
                     for (let i = 0; i < site.length; i++) {
-                        
+                        // console.log(results[i])
+                        if(results[i] != null){
+
                             data[i] = results[i]
+                        }else{
+                            data[i] = "Produto não encontrado! Experimente alterar a Categoria."
                         }
+                        
+                    }
+                    
                     return response.json(data)
     
     
@@ -142,8 +148,65 @@ export default class WebsitesController{
             console.log(err);
             await trx.rollback();
             return response.status(400).json({
-                err: 'Unexpected error while creating new Website',
+                err: 'Unexpected error while searching for a Product',
             });
         }
       }
+
+      async indexSiteById(request: Request, response: Response) {
+        const {id} = request.body
+        const trx = await db.transaction();
+        console.log(id)
+    
+      try{
+        const site = await trx('websites').where('id',id).first();
+
+        console.log(site)
+    
+        if(site){
+          await trx.commit();
+          return response.json(site);
+        }else{
+          await trx.rollback();
+          return response.status(400).json({
+              error: `Something bad Happen!`,
+          });
+        }
+      }catch(error){
+        await trx.rollback();
+        return response.status(400).json({
+            error: 'We dont have websites working right now!',
+        });
+      }
+    }
+
+    async update(request: Request, response: Response) {
+        
+        const trx = await db.transaction();
+        
+        try {
+            const {id} = request.body;
+            const  { Name, url, XPath, ImgXPath, NameXPath, PriceXPath } = request.body;
+
+            console.log(request.body)
+
+            // const hashedPassword = await PasswordHash.hashPassword(password);
+            
+            await trx('websites').update({Name, url, XPath, ImgXPath, NameXPath, PriceXPath}).where('id',id);
+            
+            await trx.commit();
+    
+            return response.status(201).send();
+
+        } catch (err) {
+
+            console.log(err);
+            await trx.rollback();
+            
+            return response.status(400).json({
+            error: 'Unexpected error while updating new User',
+            });
+
+        }
+    }
 }

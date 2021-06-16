@@ -37,6 +37,11 @@ export default class CommentsController {
                 return response.status(400).json({
                   error: 'Por favor não coloque palavras ofensivas!',
                 });
+              }else if(user.role === 'demo'){
+                await trx.rollback();
+                return response.status(400).json({
+                  error: 'Por favor não coloque palavras ofensivas!',
+                });
               }
               await trx('users').update({badge: 'Banned'}).where('id',user_id);
               await trx.commit();

@@ -10,10 +10,10 @@ export async function seed(knex: Knex): Promise<void> {
             "id": 1,
             "Name": "Continente",
             "url": "https://www.continente.pt/pesquisa/?q=",
-            "XPath": "//*[@id=\"maincontent\"]/div[2]/div[3]/div",
-            "ImgXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[1]/a/picture/img/@src",
-            "NameXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/div[1]/div/a",
-            "PriceXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[1]/div/div[1]"
+            "XPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div",
+            "ImgXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/a/picture/img/@src",
+            "NameXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[3]/div[1]/div/a",
+            "PriceXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[3]/div[2]/div[1]/div/div[1]/span[1]/span/span[1]"
           },
           {
             "id": 2,
@@ -36,6 +36,33 @@ export async function seed(knex: Knex): Promise<void> {
             "ImgXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div[1]/a/picture/img/@src",
             "NameXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div[2]/div[2]/div/a",
             "PriceXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div[2]/div[4]/div/span/span/span"
-          }
+          },
+          {
+            "id": 4,
+            "Name": "Global Data",
+            "url": "https://www.globaldata.pt/?query=",
+            "XPath": "/html/body/main/div[2]/ck-algolia-search/div[1]/div[2]/div[2]/div/div[1]/article",
+            "ImgXPath": "/html/body/main/div[2]/ck-algolia-search/div[1]/div[2]/div[2]/div/div[1]/article/div[3]/div[1]/a/div/img/@src",
+            "NameXPath": "/html/body/main/div[2]/ck-algolia-search/div[1]/div[2]/div[2]/div/div[1]/article/div[3]/div[2]/h6/a",
+            "PriceXPath": "/html/body/main/div[2]/ck-algolia-search/div[1]/div[2]/div[2]/div/div[1]/article/div[3]/div[3]/span/span",
+        },
+        {
+            "id": 5,
+            "Name": "Mbit",
+            "url": "https://www.mbit.pt/catalogsearch/result/index/?_=1623743111833&is_in_stock=1&q=",
+            "XPath": "//*[@id=\"layer-product-list\"]/div/div[2]/ol/li[1]/div[2]",
+            "ImgXPath": "//*[@id=\"layer-product-list\"]/div/div[2]/ol/li[1]/div[2]/div[1]/a/img/@src",
+            "NameXPath": "//*[@id=\"layer-product-list\"]/div/div[2]/ol/li[1]/div[2]/div[2]/strong/a",
+            "PriceXPath": "//*[@id=\"product-price-575140\"]/span",
+        },
+        {
+            "id": 6,
+            "Name": "Chip7",
+            "url": "https://www.chip7.pt/?query=",
+            "XPath": "//*[@id=\"search-hits\"]/div/div[1]",
+            "ImgXPath": "//*[@id=\"search-hits\"]/div/div[1]/div/a/div[1]/img/@src",
+            "NameXPath": "//*[@id=\"search-hits\"]/div/div[1]/div/a/div[2]/span",
+            "PriceXPath": "//*[@id=\"search-hits\"]/div/div[1]/div/div/a/p[1]",
+        }
     ]);
 };

@@ -18,62 +18,54 @@ interface Data{
 }
 
 export default async function fasterDataCollect(data: Data) {
-
+    // console.log(data)
         try {
             // console.log(data)
             const browser = await puppeteer.launch({
-                headless: true,
+                headless: true
+                // pipe: true
             });
     
             const page = await browser.newPage();
             
-            await page.goto(data.url + data.product, {
-                waitUntil: 'domcontentloaded'
+            const a = data.url + data.product
+            // console.log(data.url + a[0] + '+' + a[1])
+            // console.log(data.product[1])
+            await page.goto(a, {
+                waitUntil: 'load'
             });
+            // await page.screenshot({
+            //     path: 'example'+ Math.floor(Math.random() * 10) + '.png',
+            //   });
     
-            await page.waitForXPath(data.XPath)
+            const isShowed = await page.waitForXPath(data.XPath,{visible: true, hidden: true, timeout: 5000})
 
-            let productName = await page.$x(data.NameXPath)
-            
-            let productImg = await page.$x(data.ImgXPath)
+            if(isShowed){
 
-            let productPrice = await page.$x(data.PriceXPath)
-
-            let supermarketName = data.Supermarket;
-
-            let name = await page.evaluate(el => el.textContent, productName[0])
-                .then((data) =>{
-                    return data;
-                }
-                )
-                .catch((err) => {
-                    console.log(err)
-                });
-            
-            let img = await page.evaluate(el => el.textContent, productImg[0])
-                .then((data) =>{
-                    return data;
-                }
-                )
-                .catch((err) => {
-                    console.log(err)
-                });
-
-            let price = await page.evaluate(el => el.textContent, productPrice[0])
-            .then((data) =>{
-                return data;
+                let productName = await page.$x(data.NameXPath)
+                
+                let productImg = await page.$x(data.ImgXPath)
+    
+                let productPrice = await page.$x(data.PriceXPath)
+    
+                let supermarketName = data.Supermarket;
+    
+                let name = await page.evaluate(el => el.textContent, productName[0]);
+      
+                // console.log(productImg[0])
+    
+                let img = await page.evaluate(el => el.textContent, productImg[0]);
+    
+                let price = await page.evaluate(el => el.textContent, productPrice[0]);
+               
+                name = name.replace(/\s+/g,' ').trim();
+                price = price.replace(/\s+/g,' ').trim();
+                await page.close();
+                await browser.close();
+                return {title: supermarketName , name, price, img, url: data.url + data.product};
             }
-            )
-            .catch((err) => {
-                console.log(err)
-            });
-           
-            name = name.replace(/\s+/g,' ').trim();
-            price = price.replace(/\s+/g,' ').trim();
-            await page.close();
-            await browser.close();
-            return {title: supermarketName , name, price, img, url: data.url + data.product};
 
+            return null
             
         } catch (error) {
             console.log(error)

@@ -14,6 +14,7 @@ import db from './database/connections';
 import fasterDataCollect from './script/fastPuppeter';
 import nodemailer from 'nodemailer';
 import adminMiddleware from './middlewares/authAdmin';
+import demoMiddleware from './middlewares/authDemo';
 const multer = require('multer');
 const storage = require('./config/multer')
 
@@ -191,16 +192,19 @@ cron.schedule('0 * * * *', async function(){
 
 routes.get('/users', authMiddleware, adminMiddleware, userController.index); // Lista de utilizadores & Precisa de fornecer um token para aceder a esta rota
 routes.post('/register', userController.create); // Criação de utilizadores
-routes.put('/profile', parser.single("image"), userController.update); // Criação de utilizadores & Precisa de fornecer um token para aceder a esta rota
+routes.put('/profile', authMiddleware, demoMiddleware, parser.single("image"), userController.update); // Criação de utilizadores & Precisa de fornecer um token para aceder a esta rota
 routes.post('/authenticate', userController.authenticate); // Login
 routes.get('/confirmation/:token', userController.confirmation); // Confirmar o email do Utilizador
-routes.post('/profile',userController.indexUser); // Confirmar o email do Utilizador
-routes.delete('/users',userController.deleteUser); // Eliminar user
-routes.put('/updatePassword',userController.changePassword); // Eliminar user
-routes.put('/avatar', parser.single("image"),userController.updateAvatar); // Confirmar o email do Utilizador
+routes.post('/profile', authMiddleware, userController.indexUser); // Confirmar o email do Utilizador
+routes.delete('/users', authMiddleware, userController.deleteUser); // Eliminar user
+routes.put('/updatePassword', authMiddleware , demoMiddleware, userController.updatePassword); // Eliminar user
+routes.post('/passwordToken', userController.sendChangePasswordToken); // Eliminar user
+routes.put('/changePassword', userController.changePassword); // Eliminar user
+routes.put('/avatar', authMiddleware, demoMiddleware, parser.single("image"),userController.updateAvatar); // Confirmar o email do Utilizador
 // routes.post('/register', userController.create); // Criação de utilizadores na BD 
 
 routes.get('/newsletter', newsLetter.index);
+routes.post('/indexNewsLetter', newsLetter.indexNewsById);
 routes.post('/newsletter', newsLetter.create);
 
 routes.get('/schedule', schedule.index);
@@ -222,6 +226,8 @@ routes.post('/comments', comments.create);
 
 routes.get('/websites', websiteController.index);
 routes.post('/websites', websiteController.create);
+routes.put('/websites', websiteController.update);
+routes.post('/indexWebsites', websiteController.indexSiteById);
 routes.post('/products', websiteController.products);
 
 

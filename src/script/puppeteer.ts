@@ -18,6 +18,7 @@ interface Data{
 }
 
 export default async function DataCollect(data: Data) {
+    // console.log(data)
 
         try {
             if(data.Supermarket == "Pingo Doce" && data.filter != undefined){
@@ -32,6 +33,8 @@ export default async function DataCollect(data: Data) {
                 })
                 .then(prod => {
                     //@ts-ignore
+                    if(prod.sections[data.product].products[0] !== undefined){
+
                         buyingPrice = prod.sections[data.product].products[0]._source.buyingPrice;
                         firstName = prod.sections[data.product].products[0]._source.firstName;
                         sku = prod.sections[data.product].products[0]._source.sku;
@@ -53,6 +56,8 @@ export default async function DataCollect(data: Data) {
                             img: data.secondImgPath + sku + "_1", 
                             url: data.url + data.product
                         };
+                    }
+                    return null;
                     })
                     .catch(err => {
                         console.error(err);
@@ -74,22 +79,51 @@ export default async function DataCollect(data: Data) {
                         });
                         
                     }else{
-                        await page.goto(data.url + data.product, {
-                            waitUntil: 'load'
-                        });
+                        //ENTRA SOMENTE QUANDO NÃO EXISTE CATEGORIA
+                        // console.log("jakshdjakshdsajkd")
+                        if(data.Supermarket == "Auchan"){
+                            await page.goto(data.url + data.product, {
+                                waitUntil: 'domcontentloaded'
+                            });
+                        }else{
+
+                            await page.goto(data.url + data.product, {
+                                waitUntil: 'load'
+                            });
+                        }
                     }
             
-                    await page.waitForXPath(data.XPath)
-        
-                    let productName = await page.$x(data.NameXPath)
+                    const isShowed = await page.waitForXPath(data.XPath, {visible: true, hidden: true, timeout: 5000})
                     
-                    let productImg = await page.$x(data.ImgXPath)
-        
-                    let productPrice = await page.$x(data.PriceXPath)
-        
-                    let supermarketName = data.Supermarket;
-        
-                    let name = await page.evaluate(el => el.textContent, productName[0])
+                    if(isShowed){
+
+                        let productName = await page.$x(data.NameXPath)
+                        
+                        let productImg = await page.$x(data.ImgXPath)
+            
+                        let productPrice = await page.$x(data.PriceXPath)
+            
+                        let supermarketName = data.Supermarket;
+            
+                        let name = await page.evaluate(el => el.textContent, productName[0])
+                            .then((data) =>{
+                                return data;
+                            }
+                            )
+                            .catch((err) => {
+                                console.log(err)
+                            });
+                        
+                        let img = await page.evaluate(el => el.textContent, productImg[0])
+                            .then((data) =>{
+                                return data;
+                            }
+                            )
+                            .catch((err) => {
+                                console.log(err)
+                            });
+            
+                        let price = await page.evaluate(el => el.textContent, productPrice[0])
                         .then((data) =>{
                             return data;
                         }
@@ -97,50 +131,36 @@ export default async function DataCollect(data: Data) {
                         .catch((err) => {
                             console.log(err)
                         });
-                    
-                    let img = await page.evaluate(el => el.textContent, productImg[0])
-                        .then((data) =>{
-                            return data;
-                        }
-                        )
-                        .catch((err) => {
-                            console.log(err)
-                        });
-        
-                    let price = await page.evaluate(el => el.textContent, productPrice[0])
-                    .then((data) =>{
-                        return data;
+                        //@ts-ignore
+                        // const scrapedData = await page.evaluate(
+                        //   () =>
+                        //   Array.from(document.querySelectorAll('.productItem .productBoxTop .containerDescription .title a')).map((link) => ({
+                        //     title: link.innerHTML,
+                        //     // price: link.innerHTML,
+                        //   }))
+                        // );
+                
+                        // var a = lamudiNewPropertyCount
+                
+                        
+                        
+                        // await page.close();
+                        // await browser.close();
+                        
+                        // console.log('scrapedData', lamudiNewPropertyCount);
+                        name = name.replace(/\s+/g,' ').trim();
+                        // i = name.replace(/\s+/g,' ').trim();
+                        price = price.replace(/\s+/g,' ').trim();
+                        price = price.replace(/,/g, '.')
+                        price = price.replace(/[^\d.-]/g, '')
+                        price = parseFloat(price)
+                        await page.close();
+                        await browser.close();
+                        return {title: supermarketName , name, price, img, url: data.url + data.product};
                     }
-                    )
-                    .catch((err) => {
-                        console.log(err)
-                    });
-                    //@ts-ignore
-                    // const scrapedData = await page.evaluate(
-                    //   () =>
-                    //   Array.from(document.querySelectorAll('.productItem .productBoxTop .containerDescription .title a')).map((link) => ({
-                    //     title: link.innerHTML,
-                    //     // price: link.innerHTML,
-                    //   }))
-                    // );
-            
-                    // var a = lamudiNewPropertyCount
-            
+
+                return null
                     
-                    
-                    // await page.close();
-                    // await browser.close();
-                    
-                    // console.log('scrapedData', lamudiNewPropertyCount);
-                    name = name.replace(/\s+/g,' ').trim();
-                    // i = name.replace(/\s+/g,' ').trim();
-                    price = price.replace(/\s+/g,' ').trim();
-                    price = price.replace(/,/g, '.')
-                    price = price.replace(/[^\d.-]/g, '')
-                    price = parseFloat(price)
-                    await page.close();
-                    await browser.close();
-                    return {title: supermarketName , name, price, img, url: data.url + data.product};
             }
 
 
