@@ -11,9 +11,9 @@ export async function seed(knex: Knex): Promise<void> {
             "Name": "Continente",
             "url": "https://www.continente.pt/pesquisa/?q=",
             "XPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div",
-            "ImgXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/a/picture/img/@src",
-            "NameXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[3]/div[1]/div/a",
-            "PriceXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[3]/div[2]/div[1]/div/div[1]/span[1]/span/span[1]"
+            "ImgXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[1]/a/picture/img/@src",
+            "NameXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/div[1]/div/a",
+            "PriceXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[1]/div/div[1]/span/span/span[1]"
           },
           {
             "id": 2,

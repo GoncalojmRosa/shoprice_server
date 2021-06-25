@@ -15,8 +15,22 @@ import fasterDataCollect from './script/fastPuppeter';
 import nodemailer from 'nodemailer';
 import adminMiddleware from './middlewares/authAdmin';
 import demoMiddleware from './middlewares/authDemo';
+const rateLimit = require("express-rate-limit");
 const multer = require('multer');
 const storage = require('./config/multer')
+
+const limiter_for_Normal_routes = rateLimit({
+    windowMs: 20 * 1000, // 20 Segundos
+    max: 1, // 1 request a cada 20 Segundos
+    message: "Pedimos que pare com o Spam!",
+    statusCode: 400
+  });
+const limiter_for_auth_routes = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 Hora
+    max: 5, // 5 request a cada 1 Hora
+    message: "Demasiadas contas criadas a partir deste IP, tente mais tarde!",
+    statusCode: 400
+  });
 
 
 const parser = multer({ storage: storage });
@@ -190,8 +204,8 @@ cron.schedule('0 * * * *', async function(){
 
 })
 
-routes.get('/users', authMiddleware, adminMiddleware, userController.index); // Lista de utilizadores & Precisa de fornecer um token para aceder a esta rota
-routes.post('/register', userController.create); // Criação de utilizadores
+routes.get('/users', limiter_for_Normal_routes,authMiddleware, adminMiddleware, userController.index); // Lista de utilizadores & Precisa de fornecer um token para aceder a esta rota
+routes.post('/register', limiter_for_auth_routes, userController.create); // Criação de utilizadores
 routes.put('/profile', authMiddleware, demoMiddleware, parser.single("image"), userController.update); // Criação de utilizadores & Precisa de fornecer um token para aceder a esta rota
 routes.post('/authenticate', userController.authenticate); // Login
 routes.get('/confirmation/:token', userController.confirmation); // Confirmar o email do Utilizador

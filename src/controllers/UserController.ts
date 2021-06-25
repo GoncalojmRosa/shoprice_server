@@ -356,7 +356,7 @@ export default class UserController{
                 // console.log("Erro")
                 await trx.rollback();
                 return response.status(400).json({
-                    error: 'User already Exists',
+                    error: 'Já exsite um Utilizador com esse Email!',
                     });
             }
     
@@ -451,8 +451,8 @@ export default class UserController{
                 
                 if(!user){
                     await trx.rollback();
-                    return response.status(404).json({
-                        error: 'User Not Found',
+                    return response.status(400).json({
+                        error: 'Utilizador não Encontrado!',
                     });
                 }
                 if(user.role != 'admin'){
@@ -627,8 +627,6 @@ export default class UserController{
       
       try {
         const  { id, password, confirmPassword } = request.body;
-
-        console.log(request.body)
 
         // const hashedPassword = await PasswordHash.hashPassword(password);
         
@@ -989,7 +987,7 @@ export default class UserController{
       
 
       await trx.commit(user);
-      return response.status(201).send({message: "Irá receber um Email dentro de segundos com um Token"});
+      return response.status(201).send({message: "Irá receber um Email dentro de segundos com um Código"});
 
       } catch (err) {
 
@@ -1010,15 +1008,11 @@ export default class UserController{
       try {
         const  { code, password, confirmPassword } = request.body;
 
-        console.log(request.body)
-
         // const hashedPassword = await PasswordHash.hashPassword(password);
-        console.log(code)
 
         const codeExists = await trx('users').select('*').where('code', code).first();
 
         if(!codeExists){
-          console.log("asdhjasdkasdk")
           await trx.rollback();
       
           return response.status(400).json({

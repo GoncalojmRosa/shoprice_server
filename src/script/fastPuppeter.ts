@@ -29,6 +29,7 @@ export default async function fasterDataCollect(data: Data) {
             const page = await browser.newPage();
             
             const a = data.url + data.product
+            // console.log(a)
             // console.log(data.url + a[0] + '+' + a[1])
             // console.log(data.product[1])
             await page.goto(a, {
@@ -38,7 +39,7 @@ export default async function fasterDataCollect(data: Data) {
             //     path: 'example'+ Math.floor(Math.random() * 10) + '.png',
             //   });
     
-            const isShowed = await page.waitForXPath(data.XPath,{visible: true, hidden: true, timeout: 5000})
+            const isShowed = await page.waitForXPath(data.XPath)
 
             if(isShowed){
 
