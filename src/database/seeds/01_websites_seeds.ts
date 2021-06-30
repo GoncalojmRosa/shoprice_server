@@ -49,11 +49,11 @@ export async function seed(knex: Knex): Promise<void> {
         {
             "id": 5,
             "Name": "Mbit",
-            "url": "https://www.mbit.pt/catalogsearch/result/index/?_=1623743111833&is_in_stock=1&q=",
-            "XPath": "//*[@id=\"layer-product-list\"]/div/div[2]/ol/li[1]/div[2]",
+            "url": "https://www.mbit.pt/catalogsearch/result/?q=",
+            "XPath": "//*[@id=\"layer-product-list\"]/div/div[2]/ol/li[1]",
             "ImgXPath": "//*[@id=\"layer-product-list\"]/div/div[2]/ol/li[1]/div[2]/div[1]/a/img/@src",
             "NameXPath": "//*[@id=\"layer-product-list\"]/div/div[2]/ol/li[1]/div[2]/div[2]/strong/a",
-            "PriceXPath": "//*[@id=\"product-price-575140\"]/span",
+            "PriceXPath": "//*[@id=\"partner-price\"]/div",
         },
         {
             "id": 6,

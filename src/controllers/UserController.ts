@@ -1001,6 +1001,38 @@ export default class UserController{
       }
     }
 
+    async searchByLetters(request: Request, response: Response) {
+        
+      const trx = await db.transaction();
+      
+      try {
+        const  { letters } = request.body;
+
+        const userResponse = await trx('users').select('*').whereRaw(`name LIKE ?`, [`%${letters}%`])
+        if(userResponse != []){
+  
+          await trx.commit();
+  
+          return response.status(201).send(userResponse);
+
+        }else{
+          return response.status(400).json({
+            error: 'Utilizador não encontrado',
+            });
+        }
+
+      } catch (err) {
+
+          console.log(err);
+          await trx.rollback();
+          
+          return response.status(400).json({
+          error: 'Unexpected error while updating new User',
+          });
+
+      }
+    }
+
     async changePassword(request: Request, response: Response) {
         
       const trx = await db.transaction();
@@ -1016,7 +1048,7 @@ export default class UserController{
           await trx.rollback();
       
           return response.status(400).json({
-            error: 'Verifique se recebeu um Email com um Código! Caso não tenha recebido entre em contacto com o nosso Suporte',
+            error: 'Verifique se o código está correto!',
           });
         }
 

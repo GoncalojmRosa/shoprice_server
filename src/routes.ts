@@ -94,9 +94,7 @@ cron.schedule('0 * * * *', async function(){
     const news = await trx('newsLetter').select().whereBetween('_next_email', [ye_format, sended_at])
 
     try {
-        console.log(news)
         if(news.length != 0){
-            console.log(news[0].website_id)
     
             let transporter = nodemailer.createTransport({
                 name: "Email Verification",
@@ -114,7 +112,6 @@ cron.schedule('0 * * * *', async function(){
                 const user = await trx('users').where({id: news[i].user_id}).first();
                 const schedule = await trx('schedule_time').where({id: news[i].schedule_id}).first();
 
-                console.log(schedule)
             
                 const a = await fasterDataCollect({
                     Supermarket: site.Name,
@@ -125,13 +122,6 @@ cron.schedule('0 * * * *', async function(){
                     NameXPath: site.NameXPath,
                     PriceXPath: site.PriceXPath,
                 });
-                
-                    await transporter.sendMail({
-                      from: "testeemail1@sapo.pt",
-                      to: user.email,
-                      subject: 'Confirm Email',
-                      html: `Price ${a?.price}`,
-                  });
                 
                   if(schedule.id == 1){
     
@@ -169,7 +159,7 @@ cron.schedule('0 * * * *', async function(){
                     }).where({id: news[i].id});
     
                     await trx.commit(newsCreated)
-                  }else{
+                  }else if(schedule.id == 3){
                     var datePlusMonth =
                     date.getFullYear() + "-" +
                       ("00" + (date.getMonth() + 2)).slice(-2) + "-" +
@@ -189,8 +179,167 @@ cron.schedule('0 * * * *', async function(){
                     }).where({id: news[i].id});
         
                     await trx.commit(newsCreated)
-        
                 }
+                await transporter.sendMail({
+                    from: "testeemail1@sapo.pt",
+                    to: user.email,
+                    subject: 'Confirm Email',
+                    html: `<!DOCTYPE html>
+                    <html>
+                    
+                    <head>
+                        <title></title>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                        <style type="text/css">
+                            body,
+                            table,
+                            td,
+                            a {
+                                -webkit-text-size-adjust: 100%;
+                                -ms-text-size-adjust: 100%;
+                            }
+                    
+                            table,
+                            td {
+                                mso-table-lspace: 0pt;
+                                mso-table-rspace: 0pt;
+                            }
+                    
+                            img {
+                                -ms-interpolation-mode: bicubic;
+                            }
+                    
+                            img {
+                                border: 0;
+                                height: auto;
+                                line-height: 100%;
+                                outline: none;
+                                text-decoration: none;
+                            }
+                    
+                            table {
+                                border-collapse: collapse !important;
+                            }
+                    
+                            body {
+                                height: 100% !important;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                width: 100% !important;
+                            }
+                    
+                            a[x-apple-data-detectors] {
+                                color: inherit !important;
+                                text-decoration: none !important;
+                                font-size: inherit !important;
+                                font-family: inherit !important;
+                                font-weight: inherit !important;
+                                line-height: inherit !important;
+                            }
+                    
+                            @media screen and (max-width: 480px) {
+                                .mobile-hide {
+                                    display: none !important;
+                                }
+                    
+                                .mobile-center {
+                                    text-align: center !important;
+                                }
+                            }
+                    
+                            /* ANDROID CENTER FIX */
+                            div[style*="margin: 16px 0;"] {
+                                margin: 0 !important;
+                            }
+                        </style>
+                    
+                    <body style="margin: 0 !important; padding: 0 !important; background-color: #eeeeee;" bgcolor="#eeeeee">
+                        <!-- HIDDEN PREHEADER TEXT -->
+                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: Open Sans, Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> </div>
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td align="center" style="background-color: #eeeeee;" bgcolor="#eeeeee">
+                                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                                        <tr>
+                                            <td align="center" valign="top" style="font-size:0; padding: 35px;" bgcolor="#ff7361">
+                                                <div style="display:inline-block; max-width:50%; min-width:100px; vertical-align:top; width:100%;">
+                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
+                                                        <tr>
+                                                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 36px; font-weight: 800; line-height: 48px;" class="mobile-center">
+                                                                <h1 style="font-size: 36px; font-weight: 800; margin: 0; color: #ffffff;">Shoprice</h1>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div style="display:inline-block; max-width:50%; min-width:100px; vertical-align:top; width:100%;" class="mobile-hide">
+                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
+                                                        <tr>
+                                                            <td align="right" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; line-height: 48px;">
+                                                                <table cellspacing="0" cellpadding="0" border="0" align="right">
+                                                                    <tr>
+                                                                        <td style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400;">
+                                                                            <p style="font-size: 18px; font-weight: 400; margin: 0; color: #ffffff;"><a href="#" target="_blank" style="color: #ffffff; text-decoration: none;">Shop &nbsp;</a></p>
+                                                                        </td>
+                                                                        <td style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 24px;"> <a href="#" target="_blank" style="color: #ffffff; text-decoration: none;"><img src="https://img.icons8.com/dusk/64/000000/add-shopping-cart.png" width="27" height="23" style="display: block; border: 0px;" /></a> </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 35px; background-color: #ffffff;" bgcolor="#ffffff">
+                                                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                                                    <tr>
+                                                        <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-bottom: 15px; border-bottom: 3px solid #eeeeee;"> <img src=${a?.img} width="190" height="187" style="display: block; border: 0px;" /><br>
+                                                            <h2 style="font-size: 30px; font-weight: 800; line-height: 36px; color: #333333; margin: 0;"> Something's Waiting For You </h2>
+                                                            <p style="font-size: 16px; font-weight: 400; line-height: 24px; color: #777777;"> You have added "${a?.name}" in your cart on 22nd April, 2019. Please finish the order by clicking below button </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="center" style="padding: 25px 0;">
+                                                            <table border="0" cellspacing="0" cellpadding="0">
+                                                                <tr>
+                                                                    <td align="center" style="border-radius: 5px;" bgcolor="#ed8e20"> <a href="#" target="_blank" style="font-size: 18px; font-family: Open Sans, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 5px; background-color: #ed8e20; padding: 15px 30px; border: 1px solid #ed8e20; display: block;">${a?.price}</a> </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 35px; background-color: #ffffff; border-top: 1px solid #dddddd;" bgcolor="#ffffff">
+                                                <!--[if (gte mso 9)|(IE)]> <table align="center" border="0" cellspacing="0" cellpadding="0" width="600"> <tr> <td align="center" valign="top" width="600"> <![endif]-->
+                                                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                                                    <tr>
+                                                        <td align="center"> <img src="https://img.icons8.com/dusk/64/000000/ms-share-point.png" width="37" height="37" style="display: block; border: 0px;" /> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 24px; padding: 5px 0 10px 0;">
+                                                            <p style="font-size: 14px; font-weight: 800; line-height: 18px; color: #333333;"> BBBootstrap.com<br> Street, NJ,USA </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 24px;">
+                                                            <p style="font-size: 14px; font-weight: 400; line-height: 20px; color: #777777;"> If you didn't create an account using this email address, please ignore this email or <a href="#" target="_blank" style="color: #777777;">unsusbscribe</a>. </p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </body>
+                    
+                    </html>`,
+                });
             }
         }else{
             await trx.rollback();
@@ -204,7 +353,7 @@ cron.schedule('0 * * * *', async function(){
 
 })
 
-routes.get('/users', limiter_for_Normal_routes,authMiddleware, adminMiddleware, userController.index); // Lista de utilizadores & Precisa de fornecer um token para aceder a esta rota
+routes.get('/users',authMiddleware, adminMiddleware, userController.index); // Lista de utilizadores & Precisa de fornecer um token para aceder a esta rota
 routes.post('/register', limiter_for_auth_routes, userController.create); // Criação de utilizadores
 routes.put('/profile', authMiddleware, demoMiddleware, parser.single("image"), userController.update); // Criação de utilizadores & Precisa de fornecer um token para aceder a esta rota
 routes.post('/authenticate', userController.authenticate); // Login
@@ -214,6 +363,7 @@ routes.delete('/users', authMiddleware, userController.deleteUser); // Eliminar 
 routes.put('/updatePassword', authMiddleware , demoMiddleware, userController.updatePassword); // Eliminar user
 routes.post('/passwordToken', userController.sendChangePasswordToken); // Eliminar user
 routes.put('/changePassword', userController.changePassword); // Eliminar user
+routes.post('/search', userController.searchByLetters); // Eliminar user
 routes.put('/avatar', authMiddleware, demoMiddleware, parser.single("image"),userController.updateAvatar); // Confirmar o email do Utilizador
 // routes.post('/register', userController.create); // Criação de utilizadores na BD 
 
