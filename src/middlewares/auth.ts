@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-const authConfig = require('../config/auth')
+import {c} from '../config/auth'
 
 export default function autenticationMiddleware(request: Request, response: Response, next: NextFunction){
     const authHeader = request.headers.authorization;
@@ -21,7 +21,7 @@ export default function autenticationMiddleware(request: Request, response: Resp
         return response.status(401).json({ error: 'Token malformatted.' })
     }
 
-    jwt.verify(token, authConfig.secret, (err: any, decoded: any)=>{
+    jwt.verify(token, c(), (err: any, decoded: any)=>{
         if(err) return response.status(401).json({ error: 'Token Invalid.' })
 
         //@ts-ignore

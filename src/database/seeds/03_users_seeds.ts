@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import * as bcrypt from "bcrypt";
-const _helper = require('../../helpers/roles');
-require("dotenv").config();
+import dotenv from "dotenv"
+dotenv.config()
 
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
@@ -18,7 +18,7 @@ export async function seed(knex: Knex): Promise<void> {
         "badge": "CEO",
         "isConfirmed": 1,
         "password": hashedPassword,
-        "role": _helper.ADMIN
+        "role": process.env.ADMIN
     },{
         "id": 2,
         "name": "Shoprice Demo",
@@ -26,6 +26,6 @@ export async function seed(knex: Knex): Promise<void> {
         "badge": "Active",
         "isConfirmed": 1,
         "password": password_demo,
-        "role": _helper.DEMO
+        "role": process.env.DEMO
     }]);
 };

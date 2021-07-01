@@ -15,9 +15,9 @@ import fasterDataCollect from './script/fastPuppeter';
 import nodemailer from 'nodemailer';
 import adminMiddleware from './middlewares/authAdmin';
 import demoMiddleware from './middlewares/authDemo';
-const rateLimit = require("express-rate-limit");
-const multer = require('multer');
-const storage = require('./config/multer')
+import rateLimit from "express-rate-limit";
+import multer from 'multer';
+import storage from './config/multer';
 
 const limiter_for_Normal_routes = rateLimit({
     windowMs: 20 * 1000, // 20 Segundos

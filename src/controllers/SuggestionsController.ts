@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import db from '../database/connections';
 import filter from 'bad-words';
-const wordsEng = require('../config/bad-wordsEng.json')
-const wordsPt = require('../config/bad-wordsPt.json')
+import wordsEng from '../config/bad-wordsEng';
+import wordsPt from '../config/bad-wordsPt';
 
 var wordFitler = new filter()
-wordFitler.addWords(...wordsEng)
-wordFitler.addWords(...wordsPt)
+wordFitler.addWords(...wordsEng())
+wordFitler.addWords(...wordsPt())
+
 
 export default class SuggestionsController {
   async index(request: Request, response: Response) {

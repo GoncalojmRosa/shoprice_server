@@ -2,20 +2,22 @@ import db from "../database/connections";
 import {PasswordHash} from "../security/passwordHash";
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-const _helpers = require('../helpers/roles')
-const authConfig = require('../config/auth')
+import {c, d} from '../config/auth'
+import dotenv from 'dotenv';
 import nodemailer from "nodemailer";
 import { indexUser, UserInterface } from "../models/UserModel";
-import { Body } from "node-fetch";
+
+
+dotenv.config();
 
 function generateEmailToken(params = {}){
- return jwt.sign(params, authConfig.EMAIL_SECRET, {
+ return jwt.sign(params, c(), {
      expiresIn: '1d'
  })
 }
 
 function generateToken(params = {}){
-    return jwt.sign(params, authConfig.secret, {
+    return jwt.sign(params, d(), {
         expiresIn: '1d'
     })
    }
@@ -351,7 +353,7 @@ export default class UserController{
                 });
                 await trx.commit(user);
 
-                return response.json({token: generateToken({email: email, role: _helpers.BASIC}), refresh_token: generateToken({ email, password: hashedPassword })});
+                return response.json({token: generateToken({email: email, role: process.env.BASIC}), refresh_token: generateToken({ email, password: hashedPassword })});
             }else{
                 // console.log("Erro")
                 await trx.rollback();
@@ -375,7 +377,7 @@ export default class UserController{
     async confirmation(request: Request, response: Response) {
         const trx = await db.transaction();
         try {
-            jwt.verify(request.params.token, authConfig.EMAIL_SECRET);
+            jwt.verify(request.params.token, d());
 
 
             const user = await trx('users').where({emailToken: request.params.token}).first();
@@ -438,7 +440,7 @@ export default class UserController{
                     });
                 }
 
-                const token = jwt.sign({id: user.id, email: user.email, role: user.role}, authConfig.secret,
+                const token = jwt.sign({id: user.id, email: user.email, role: user.role}, c(),
                   {
                       expiresIn: 86400,
                   });
@@ -477,7 +479,7 @@ export default class UserController{
                         error: 'Your Email is not Confirmed!',
                     });
                 }
-                const token = jwt.sign({id: user.id, email: user.email, role: user.role}, authConfig.secret,
+                const token = jwt.sign({id: user.id, email: user.email, role: user.role}, c(),
                     {
                         expiresIn: 86400,
                     });

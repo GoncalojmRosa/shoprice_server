@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsnd --transpile-only --ignore-watch node_modules --respawn src/server.ts",
@@ -20,15 +21,17 @@
     "@types/bad-words": "^3.0.0",
     "@types/bcrypt": "^3.0.0",
     "@types/cors": "^2.8.7",
-    "@types/express": "^4.17.7",
+    "@types/express": "^4.17.12",
+    "@types/express-rate-limit": "^5.1.2",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.168",
+    "@types/multer": "^1.4.6",
     "@types/node-cron": "^2.0.3",
     "@types/node-fetch": "^2.5.8",
     "@types/nodemailer": "^6.4.0",
     "@types/puppeteer": "^5.4.2",
     "ts-node-dev": "^1.0.0-pre.56",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.10"
   },
   "dependencies": {
     "bad-words": "^3.0.4",
