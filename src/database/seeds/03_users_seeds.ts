@@ -6,9 +6,9 @@ require("dotenv").config();
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
     await knex("users").del();
-
-    const hashedPassword = await bcrypt.hash(process.env.PASSWORD, 10);
-    const password_demo = await bcrypt.hash(process.env.PASSWORD_DEMO, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(process.env.PASSWORD, salt);
+    const password_demo = await bcrypt.hash(process.env.PASSWORD_DEMO, salt);
 
     // Inserts seed entries
     await knex("users").insert([{

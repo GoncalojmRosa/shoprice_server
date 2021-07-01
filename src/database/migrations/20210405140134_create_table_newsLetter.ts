@@ -24,13 +24,14 @@ export async function up(knex: Knex): Promise<void> {
         .inTable('users')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-        table
-        .integer('schedule_id')
-        .notNullable()
-        .references('id')
-        .inTable('schedule_time')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE');
+
+        // table
+        // .integer('schedule_id')
+        // .notNullable()
+        // .references('id')
+        // .inTable('schedule_time')
+        // .onUpdate('CASCADE')
+        // .onDelete('CASCADE');
   });
 }
 

@@ -464,7 +464,6 @@ export default class UserController{
                     });
                   }
                 }
-
                 if(!await PasswordHash.isPasswordValid(password, user.password)){
                     await trx.rollback();
                     return response.status(400).json({

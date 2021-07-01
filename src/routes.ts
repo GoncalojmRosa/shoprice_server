@@ -280,7 +280,7 @@ cron.schedule('0 * * * *', async function(){
                                                                 <table cellspacing="0" cellpadding="0" border="0" align="right">
                                                                     <tr>
                                                                         <td style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400;">
-                                                                            <p style="font-size: 18px; font-weight: 400; margin: 0; color: #ffffff;"><a href="#" target="_blank" style="color: #ffffff; text-decoration: none;">Shop &nbsp;</a></p>
+                                                                            <p style="font-size: 18px; font-weight: 400; margin: 0; color: #ffffff;"><a href="#" target="_blank" style="color: #ffffff; text-decoration: none;">Criar &nbsp;</a></p>
                                                                         </td>
                                                                         <td style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 24px;"> <a href="#" target="_blank" style="color: #ffffff; text-decoration: none;"><img src="https://img.icons8.com/dusk/64/000000/add-shopping-cart.png" width="27" height="23" style="display: block; border: 0px;" /></a> </td>
                                                                     </tr>
@@ -296,15 +296,15 @@ cron.schedule('0 * * * *', async function(){
                                                 <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
                                                     <tr>
                                                         <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-bottom: 15px; border-bottom: 3px solid #eeeeee;"> <img src=${a?.img} width="190" height="187" style="display: block; border: 0px;" /><br>
-                                                            <h2 style="font-size: 30px; font-weight: 800; line-height: 36px; color: #333333; margin: 0;"> Something's Waiting For You </h2>
-                                                            <p style="font-size: 16px; font-weight: 400; line-height: 24px; color: #777777;"> You have added "${a?.name}" in your cart on 22nd April, 2019. Please finish the order by clicking below button </p>
+                                                            <h2 style="font-size: 30px; font-weight: 800; line-height: 36px; color: #333333; margin: 0;"> Obrigado por nos escolher </h2>
+                                                            <p style="font-size: 16px; font-weight: 400; line-height: 24px; color: #777777;"> Você criou uma NewsLetter com o Produto "${a?.name}" criado em ${sended_at}. Receberá as informações ${schedule.Type}. </br> Obrigado!</p>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td align="center" style="padding: 25px 0;">
                                                             <table border="0" cellspacing="0" cellpadding="0">
                                                                 <tr>
-                                                                    <td align="center" style="border-radius: 5px;" bgcolor="#ed8e20"> <a href="#" target="_blank" style="font-size: 18px; font-family: Open Sans, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 5px; background-color: #ed8e20; padding: 15px 30px; border: 1px solid #ed8e20; display: block;">${a?.price}</a> </td>
+                                                                    <td align="center" style="border-radius: 5px;" bgcolor="#ed8e20"> <a href=${a?.url} target="_blank" style="font-size: 18px; font-family: Open Sans, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 5px; background-color: #ed8e20; padding: 15px 30px; border: 1px solid #ed8e20; display: block;">${a?.price}</a> </td>
                                                                 </tr>
                                                             </table>
                                                         </td>
@@ -312,26 +312,7 @@ cron.schedule('0 * * * *', async function(){
                                                 </table>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td align="center" style="padding: 35px; background-color: #ffffff; border-top: 1px solid #dddddd;" bgcolor="#ffffff">
-                                                <!--[if (gte mso 9)|(IE)]> <table align="center" border="0" cellspacing="0" cellpadding="0" width="600"> <tr> <td align="center" valign="top" width="600"> <![endif]-->
-                                                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
-                                                    <tr>
-                                                        <td align="center"> <img src="https://img.icons8.com/dusk/64/000000/ms-share-point.png" width="37" height="37" style="display: block; border: 0px;" /> </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 24px; padding: 5px 0 10px 0;">
-                                                            <p style="font-size: 14px; font-weight: 800; line-height: 18px; color: #333333;"> BBBootstrap.com<br> Street, NJ,USA </p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 24px;">
-                                                            <p style="font-size: 14px; font-weight: 400; line-height: 20px; color: #777777;"> If you didn't create an account using this email address, please ignore this email or <a href="#" target="_blank" style="color: #777777;">unsusbscribe</a>. </p>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
+                                
                                     </table>
                                 </td>
                             </tr>
