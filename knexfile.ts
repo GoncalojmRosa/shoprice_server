@@ -1,7 +1,7 @@
 module.exports = {
     // development: {
-      client: 'sqlite3',
-      connection: './src/database/database.sqlite',
+      client: 'postgres',
+      connection: 'postgressql://postgres:12345@localhost:5432/shoprice',
       migrations: {
         tableName: 'knex_migrations',
         directory: `./src/database/migrations`
