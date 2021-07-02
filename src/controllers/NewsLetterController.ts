@@ -79,7 +79,7 @@ export default class NewsLetter {
           await transporter.sendMail({
             from: "testeemail1@sapo.pt",
             to: user.email,
-            subject: 'Confirm Email',
+            subject: 'NewsLetter Shoprice',
             html: `<!DOCTYPE html>
             <html>
             
@@ -341,4 +341,36 @@ export default class NewsLetter {
     });
   }
 }
+
+async delete(request: Request, response: Response) {
+    const { id } = request.body;
+
+    console.log(request.body)
+
+    const trx = await db.transaction();
+
+    try {
+      const isSuggestion = await trx('newsLetter').where({id: id}).first();
+      if(isSuggestion){
+
+        const deletedReport =  await trx('newsLetter').delete().where({id: id});
+
+        await trx.commit(deletedReport);
+
+        return response.json();
+      }else{
+        await trx.rollback();
+        return response.status(400).json({
+            err: 'Unexpected error while deleting newsLetter',
+        });
+      }
+
+    } catch (err) {
+        console.log(err);
+        await trx.rollback();
+        return response.status(400).json({
+            err: 'Unexpected error while deleting Suggestion',
+        });
+    }
+  }
 }

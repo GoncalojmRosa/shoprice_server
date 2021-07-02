@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import db from '../database/connections';
 import filter from 'bad-words';
-import wordsEng from '../config/bad-wordsEng';
-import wordsPt from '../config/bad-wordsPt';
+const wordsEng = require('../config/bad-wordsEng.json')
+const wordsPt = require('../config/bad-wordsPt.json')
 
 var wordFitler = new filter()
-wordFitler.addWords(...wordsEng())
-wordFitler.addWords(...wordsPt())
+wordFitler.addWords(...wordsEng)
+wordFitler.addWords(...wordsPt)
 
 export default class CommentsController {
   async index(request: Request, response: Response) {

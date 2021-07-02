@@ -9,7 +9,7 @@ export async function seed(knex: Knex): Promise<void> {
         {
             "id": 1,
             "name": "Mercearia",
-            "queryString": "&pmin=0%2e01&cgid=mercearia&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.004.000.00000",
             "website_id": 1
           },
           {
@@ -27,7 +27,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 4,
             "name": "Legumes",
-            "queryString": "&pmin=0%2e01&cgid=frutas-legumes&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.001.002.00000",
             "website_id": 1
           },
           {
@@ -45,7 +45,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 7,
             "name": "Bebidas",
-            "queryString": "&pmin=0%2e01&cgid=bebidas&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.007.003.00000",
             "website_id": 1
           },
           {
@@ -63,7 +63,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 10,
             "name": "Talho",
-            "queryString": "&pmin=0%2e01&cgid=peixaria-talho&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.001.003.00000",
             "website_id": 1
           },
           {
@@ -81,7 +81,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 13,
             "name": "Peixe",
-            "queryString": "&pmin=0%2e01&cgid=peixaria-talho&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.001.003.00000",
             "website_id": 1
           },
           {
@@ -99,7 +99,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 16,
             "name": "Frutas",
-            "queryString": "&pmin=0%2e01&cgid=frutas-legumes&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.001.001.00000",
             "website_id": 1
           },
           {
@@ -117,7 +117,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 19,
             "name": "Temperos",
-            "queryString": "&cgid=mercearia-molhos-temperos-sal&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.003.004.00000",
             "website_id": 1
           },
           {
@@ -135,7 +135,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 22,
             "name": "Higiene",
-            "queryString": "&cgid=higiene-beleza&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.009.001.00000",
             "website_id": 1
           },
           {
@@ -153,7 +153,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 25,
             "name": "Higiene Oral",
-            "queryString": "&cgid=higiene-beleza-oral&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.009.003.00000",
             "website_id": 1
           },
           {
@@ -171,7 +171,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 28,
             "name": "Infantil",
-            "queryString": "&cgid=higiene-beleza-oral&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.009.003.00000",
             "website_id": 1
           },
           {
@@ -189,7 +189,7 @@ export async function seed(knex: Knex): Promise<void> {
           {
             "id": 31,
             "name": "Cabelo",
-            "queryString": "&cgid=higiene-beleza-cabelo&page=0",
+            "queryString": "%3Arelevance%3Acategory%3AWEB.009.002.00000",
             "website_id": 1
           },
           {

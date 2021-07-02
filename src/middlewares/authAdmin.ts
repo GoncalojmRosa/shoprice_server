@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import {c} from '../config/auth'
-import dotenv from 'dotenv';
-
-dotenv.config()
+const _helpers = require('../helpers/roles')
+const authConfig = require('../config/auth')
 const adminMiddleware = (request: Request, response: Response, next: NextFunction) => {
     const authHeader = request.headers.authorization;
 
@@ -23,13 +21,13 @@ const adminMiddleware = (request: Request, response: Response, next: NextFunctio
         return response.status(401).json({ error: 'Token malformatted.' })
     }
 
-    jwt.verify(token, c(), (err: any, decoded: any)=>{
+    jwt.verify(token, authConfig.secret, (err: any, decoded: any)=>{
         if(err) return response.status(401).json({ error: 'Token Invalid.' })
 
         //@ts-ignore
         // request.userId = decoded.id;
 
-        if(decoded.role != process.env.ADMIN){
+        if(decoded.role != _helpers.ADMIN){
             return response.status(403).json({ error: 'Unauthorized' })
         }
         

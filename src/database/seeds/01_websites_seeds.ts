@@ -8,12 +8,12 @@ export async function seed(knex: Knex): Promise<void> {
     await knex("websites").insert([
         {
             "id": 1,
-            "Name": "Continente",
-            "url": "https://www.continente.pt/pesquisa/?q=",
-            "XPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div",
-            "ImgXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[1]/a/picture/img/@src",
-            "NameXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/div[1]/div/a",
-            "PriceXPath": "//*[@id=\"product-search-results\"]/div/div[2]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[1]/div/div[1]/span/span/span[1]"
+            "Name": "Mini Preço",
+            "url": "https://lojaonline.minipreco.pt/search?text=",
+            "XPath": "//*[@id=\"productgridcontainer\"]/div[4]/div[1]",
+            "ImgXPath": "//*[@id=\"productgridcontainer\"]/div[4]/div[1]/div/a/span[1]/img/@src",
+            "NameXPath": "//*[@id=\"productgridcontainer\"]/div[4]/div[1]/div/a/span[2]",
+            "PriceXPath": "//*[@id=\"productgridcontainer\"]/div[4]/div[1]/div/div/div/p[1]"
           },
           {
             "id": 2,

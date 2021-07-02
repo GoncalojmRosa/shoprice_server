@@ -2,22 +2,19 @@ import db from "../database/connections";
 import {PasswordHash} from "../security/passwordHash";
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import {c, d} from '../config/auth'
-import dotenv from 'dotenv';
+const _helpers = require('../helpers/roles')
+const authConfig = require('../config/auth')
 import nodemailer from "nodemailer";
 import { indexUser, UserInterface } from "../models/UserModel";
 
-
-dotenv.config();
-
 function generateEmailToken(params = {}){
- return jwt.sign(params, c(), {
+ return jwt.sign(params, authConfig.EMAIL_SECRET, {
      expiresIn: '1d'
  })
 }
 
 function generateToken(params = {}){
-    return jwt.sign(params, d(), {
+    return jwt.sign(params, authConfig.secret, {
         expiresIn: '1d'
     })
    }
@@ -77,7 +74,7 @@ export default class UserController{
                 await transporter.sendMail({
                     from: "testeemail1@sapo.pt",
                     to: email,
-                    subject: 'Confirm Email',
+                    subject: 'Confirmar Email',
                     html: `<!DOCTYPE html>
                     <html>
                     <head>
@@ -205,7 +202,7 @@ export default class UserController{
                               <tr>
                                 <td align="center" valign="top" style="padding: 36px 24px;">
                                   <a href="https://sendgrid.com" target="_blank" style="display: inline-block;">
-                                    <img src="./img/paste-logo-light@2x.png" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
+                                    <img src="../img/Frame1.svg" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
                                   </a>
                                 </td>
                               </tr>
@@ -230,7 +227,7 @@ export default class UserController{
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                               <tr>
                                 <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #d4dadf;">
-                                  <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Confirm Your Email Address</h1>
+                                  <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Confirme o seu Endereço de Email</h1>
                                 </td>
                               </tr>
                             </table>
@@ -256,7 +253,7 @@ export default class UserController{
                               <!-- start copy -->
                               <tr>
                                 <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                                  <p style="margin: 0;">Tap the button below to confirm your email address. If you didn't create an account with <a href="https://sendgrid.com">Shoprice</a>, you can safely delete this email.</p>
+                                  <p style="margin: 0;">Clique onde diz "Confirmar Conta" para poder começar a utilizar a sua conta. Se não criou conta na <a href="https://web-shoprice.herokuapp.com/">Shoprice</a>, poderá eliminar este email.</p>
                                 </td>
                               </tr>
                               <!-- end copy -->
@@ -270,7 +267,7 @@ export default class UserController{
                                         <table border="0" cellpadding="0" cellspacing="0">
                                           <tr>
                                             <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                                              <a href="${url}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Confirm Account</a>
+                                              <a href="${url}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Confirmar Conta</a>
                                             </td>
                                           </tr>
                                         </table>
@@ -280,20 +277,12 @@ export default class UserController{
                                 </td>
                               </tr>
                               <!-- end button -->
-                    
-                              <!-- start copy -->
-                              <tr>
-                                <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                                  <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-                                  <p style="margin: 0;"><a href="${url}" target="_blank">https://shoprice.com</a></p>
-                                </td>
-                              </tr>
-                              <!-- end copy -->
+
                     
                               <!-- start copy -->
                               <tr>
                                 <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                                  <p style="margin: 0;">Cheers,<br> Shoprice</p>
+                                  <p style="margin: 0;">Cumprimentos,<br> Shoprice</p>
                                 </td>
                               </tr>
                               <!-- end copy -->
@@ -321,7 +310,7 @@ export default class UserController{
                               <!-- start permission -->
                               <tr>
                                 <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                                  <p style="margin: 0;">You received this email because we received a request for [type_of_action] for your account. If you didn't request [type_of_action] you can safely delete this email.</p>
+                                  <p style="margin: 0;">Você recebeu este email devido ao facto de ter criado uma conta recentemente utilizando este Email. Se não o fez poderá apagar este Email.</p>
                                 </td>
                               </tr>
                               <!-- end permission -->
@@ -329,8 +318,7 @@ export default class UserController{
                               <!-- start unsubscribe -->
                               <tr>
                                 <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                                  <p style="margin: 0;">To stop receiving these emails, you can <a href="https://sendgrid.com" target="_blank">unsubscribe</a> at any time.</p>
-                                  <p style="margin: 0;">Paste 1234 S. Broadway St. City, State 12345</p>
+                                  <p style="margin: 0;">Portugal, Castelo Branco.</p>
                                 </td>
                               </tr>
                               <!-- end unsubscribe -->
@@ -353,7 +341,7 @@ export default class UserController{
                 });
                 await trx.commit(user);
 
-                return response.json({token: generateToken({email: email, role: process.env.BASIC}), refresh_token: generateToken({ email, password: hashedPassword })});
+                return response.json({token: generateToken({email: email, role: _helpers.BASIC}), refresh_token: generateToken({ email, password: hashedPassword })});
             }else{
                 // console.log("Erro")
                 await trx.rollback();
@@ -377,7 +365,7 @@ export default class UserController{
     async confirmation(request: Request, response: Response) {
         const trx = await db.transaction();
         try {
-            jwt.verify(request.params.token, d());
+            jwt.verify(request.params.token, authConfig.EMAIL_SECRET);
 
 
             const user = await trx('users').where({emailToken: request.params.token}).first();
@@ -393,10 +381,10 @@ export default class UserController{
                 await trx.commit(confirmUser);
             }
 
-            const msg = `Parabéns!! Agora você faz parte da plataforma da Shoprice.`;
+            // const msg = `Parabéns!! Agora você faz parte da plataforma da Shoprice.`;
             // window.location.href = `/notify?title=Valide sua conta&=${msg}&url=/&text=Página Inicial`;
 
-            response.redirect(`http://localhost:3000/notify?title=A sua conta foi validada com sucesso!&msg=${msg}&url=/&text=Página Inicial`);
+            response.redirect(`http://localhost:3000/`);
     
             return response.status(201).send(user);
         } catch (error) {
@@ -436,11 +424,11 @@ export default class UserController{
                if(hashPassword !== user.password){
                 await trx.rollback();
                     return response.status(400).json({
-                        error: 'Invalid Password!',
+                        error: 'Insira a Password correta!',
                     });
                 }
 
-                const token = jwt.sign({id: user.id, email: user.email, role: user.role}, c(),
+                const token = jwt.sign({id: user.id, email: user.email, role: user.role}, authConfig.secret,
                   {
                       expiresIn: 86400,
                   });
@@ -466,6 +454,7 @@ export default class UserController{
                     });
                   }
                 }
+
                 if(!await PasswordHash.isPasswordValid(password, user.password)){
                     await trx.rollback();
                     return response.status(400).json({
@@ -476,10 +465,10 @@ export default class UserController{
                 if(!user.isConfirmed){
                     await trx.rollback();
                     return response.status(401).json({
-                        error: 'Your Email is not Confirmed!',
+                        error: 'Confirme o seu Email!',
                     });
                 }
-                const token = jwt.sign({id: user.id, email: user.email, role: user.role}, c(),
+                const token = jwt.sign({id: user.id, email: user.email, role: user.role}, authConfig.secret,
                     {
                         expiresIn: 86400,
                     });
@@ -708,10 +697,11 @@ export default class UserController{
               pass: "testeEmail!12345", // generated ethereal password
           },
       });
+        
         await transporter.sendMail({
           from: "testeemail1@sapo.pt",
           to: email,
-          subject: 'Confirm Email',
+          subject: 'Código para alteração de Password',
           html: `<!DOCTYPE html>
           <html>
           <head>
@@ -839,7 +829,7 @@ export default class UserController{
                     <tr>
                       <td align="center" valign="top" style="padding: 36px 24px;">
                         <a href="https://sendgrid.com" target="_blank" style="display: inline-block;">
-                          <img src="./img/paste-logo-light@2x.png" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
+                          <img src="../img/Frame1.svg" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
                         </a>
                       </td>
                     </tr>
@@ -864,7 +854,7 @@ export default class UserController{
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                     <tr>
                       <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #d4dadf;">
-                        <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Confirm Your Email Address</h1>
+                        <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Código para alteração de Password</h1>
                       </td>
                     </tr>
                   </table>
@@ -890,7 +880,7 @@ export default class UserController{
                     <!-- start copy -->
                     <tr>
                       <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Tap the button below to confirm your email address. If you didn't create an account with <a href="https://sendgrid.com">Shoprice</a>, you can safely delete this email.</p>
+                        <p style="margin: 0;">Enviámos um código que poderá copiar e colocar aqui <a href="https://web-shoprice.herokuapp.com/forgotPassword">Shoprice</a>. Caso não tenha facultado nenhuma alteração de Password poderá eliminar este email.</p>
                       </td>
                     </tr>
                     <!-- end copy -->
@@ -904,7 +894,7 @@ export default class UserController{
                               <table border="0" cellpadding="0" cellspacing="0">
                                 <tr>
                                   <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                                    <a href="https://shoprice.com" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">${code}</a>
+                                    <a href="#" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">${code}</a>
                                   </td>
                                 </tr>
                               </table>
@@ -914,20 +904,12 @@ export default class UserController{
                       </td>
                     </tr>
                     <!-- end button -->
-          
-                    <!-- start copy -->
-                    <tr>
-                      <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-                        <p style="margin: 0;"><a href="https://shoprice.com" target="_blank">https://shoprice.com</a></p>
-                      </td>
-                    </tr>
-                    <!-- end copy -->
+
           
                     <!-- start copy -->
                     <tr>
                       <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                        <p style="margin: 0;">Cheers,<br> Shoprice</p>
+                        <p style="margin: 0;">Cumprimentos,<br> Shoprice</p>
                       </td>
                     </tr>
                     <!-- end copy -->
@@ -955,7 +937,7 @@ export default class UserController{
                     <!-- start permission -->
                     <tr>
                       <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">You received this email because we received a request for [type_of_action] for your account. If you didn't request [type_of_action] you can safely delete this email.</p>
+                        <p style="margin: 0;">Você recebeu este email devido ao facto de ter pedido um código recentemente utilizando este Email. Se não o fez poderá apagar este Email.</p>
                       </td>
                     </tr>
                     <!-- end permission -->
@@ -963,8 +945,7 @@ export default class UserController{
                     <!-- start unsubscribe -->
                     <tr>
                       <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">To stop receiving these emails, you can <a href="https://sendgrid.com" target="_blank">unsubscribe</a> at any time.</p>
-                        <p style="margin: 0;">Paste 1234 S. Broadway St. City, State 12345</p>
+                        <p style="margin: 0;">Portugal, Castelo Branco.</p>
                       </td>
                     </tr>
                     <!-- end unsubscribe -->
