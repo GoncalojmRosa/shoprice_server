@@ -49,11 +49,11 @@ const reports = new ReportController();
 
 // routes.use(authMiddleware);
 
-// cron.schedule('* * * * *', async function(){
+// cron.schedule('*/10 * * * * *', async function(){
 //     const trx = await db.transaction();
 // console.log("--------------- Cron Job Running ----------------")
 
-//     const user = await trx('users').delete().where('_created_at', '<', 'CURRENT_TIMESTAMP - INTERVAL 10 SECONDS').andWhere('isConfirmed', '=', 0);
+//     const user = await trx('users').delete().where('_created_at', '<', 'CURRENT_TIMESTAMP - INTERVAL 1 HOUR').andWhere('isConfirmed', '=', 0);
 
 //     await trx.commit(user)
 // })

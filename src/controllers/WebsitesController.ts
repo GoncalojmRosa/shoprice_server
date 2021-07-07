@@ -91,7 +91,12 @@ export default class WebsitesController{
                     let data: any[] = []
                     for (let i = 0; i < site.length; i++) {
     
-                        data[i] = results[i]
+                        if(results[i] != null){
+
+                            data[i] = results[i]
+                        }else{
+                            data[i] = "Produto não encontrado! Experimente alterar o nome do Produto."
+                        }
                     }
     
                     return response.json(data)

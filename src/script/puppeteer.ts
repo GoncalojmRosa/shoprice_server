@@ -49,6 +49,9 @@ export default async function DataCollect(data: Data) {
                         // buyingPrice = buyingPrice.replace(/[^\d.-]/g, '')
                         // buyingPrice = String(buyingPrice)
 
+                        buyingPrice = buyingPrice.toFixed(2);
+                        buyingPrice = parseFloat(buyingPrice);
+
                         return {
                             title: data.Supermarket, 
                             name: firstName, 

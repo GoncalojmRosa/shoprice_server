@@ -202,7 +202,7 @@ export default class UserController{
                               <tr>
                                 <td align="center" valign="top" style="padding: 36px 24px;">
                                   <a href="https://sendgrid.com" target="_blank" style="display: inline-block;">
-                                    <img src="../img/Frame1.svg" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
+                                  <img src="https://res.cloudinary.com/dnknjm7wh/image/upload/v1625415173/Group2_1_prmsw5.png" alt="Logo" border="0" width="350" style="display: block; width: 350px; max-width: 350px; min-width: 48px;">
                                   </a>
                                 </td>
                               </tr>
@@ -829,7 +829,7 @@ export default class UserController{
                     <tr>
                       <td align="center" valign="top" style="padding: 36px 24px;">
                         <a href="https://sendgrid.com" target="_blank" style="display: inline-block;">
-                          <img src="../img/Frame1.svg" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
+                          <img src="https://res.cloudinary.com/dnknjm7wh/image/upload/v1625415173/Group2_1_prmsw5.png" alt="Logo" border="0" width="350" style="display: block; width: 350px; max-width: 350px; min-width: 48px;">
                         </a>
                       </td>
                     </tr>
